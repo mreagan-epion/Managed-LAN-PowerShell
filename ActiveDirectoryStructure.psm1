@@ -2,10 +2,12 @@
 
 function Get-ADStructure {
     param(
-        #[Parameter(Mandatory=$False, Position=0)] [String] $DomainServer #Get-ADDomain
+        [Parameter()]
+        [string]
+        $ParameterName = '.local'
     )
 
     Import-Module ActiveDirectory
-    Write-Host Get-ADDomain.Names
+    Write-Host (Get-ADDomain)$ParameterName
 
 }
