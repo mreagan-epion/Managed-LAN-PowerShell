@@ -1,4 +1,6 @@
 
 
 Import-Module .\ActiveDirectoryStructure.psm1
-Get-ADStructure
+if (Get-ADStructure) {
+    Write-Host "AD Structure in Place"
+}

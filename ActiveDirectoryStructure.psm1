@@ -3,7 +3,7 @@
 function Get-ADStructure {
     param(
         [Parameter()]
-        [string] $domainSuffixName = '.local'
+        [string] $domainSuffixName = 'local'
     )
 
     Import-Module ActiveDirectory
