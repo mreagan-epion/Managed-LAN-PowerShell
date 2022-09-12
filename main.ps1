@@ -5,7 +5,7 @@ Import-Module .\ManagedLANGroups.psm1
 
 #Checks if AD OU Stucture is in place
 if (Get-ADStructure) {
-    Write-Host "AD Structure in Place"
+    Write-Host "AD Structure in Place" -ForegroundColor Green
 } else {
     Create-ADStructure
 }
