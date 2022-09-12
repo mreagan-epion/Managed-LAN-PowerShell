@@ -1,9 +1,11 @@
 
+$DEFAULTSUFFIXNAME = 'local'
+
 #Checking if the EpiOn and Managed LAN OU's exist
 function Get-ADStructure {
     param(
         [Parameter()]
-        [string] $domainSuffixName = 'local'
+        [string] $domainSuffixName = $DEFAULTSUFFIXNAME
     )
 
     Import-Module ActiveDirectory
@@ -39,7 +41,7 @@ function Get-ADStructure {
 function Create-ADStructure {
     param(
         [Parameter()]
-        [string] $domainSuffixName = 'local'
+        [string] $domainSuffixName = $DEFAULTSUFFIXNAME
     )
 
     Import-Module ActiveDirectory
@@ -149,5 +151,24 @@ function Create-ADStructure {
         catch {
             {Write-Host "Can't Create Misc OU. Typically this indicates incorrect Domain Suffix. " -ForegroundColor Red}
         }
+    }
+}
+
+#Used in the Managed LAN Groups Module to Obtain the OU Path
+function Get-ADStructureName {
+    param(
+        [Parameter()]
+        [string] $domainSuffixName = $DEFAULTSUFFIXNAME
+        ,
+        [Parameter(Mandatory)]
+        [bool] $suffixOrPrefix
+    )
+
+    Import-Module ActiveDirectory
+    $domainPrefixName = (Get-ADDomain).name
+    if ($suffixOrPrefix) {
+        return $domainPrefixName
+    } else {
+        return $domainSuffixName
     }
 }
