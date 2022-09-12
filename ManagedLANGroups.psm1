@@ -53,9 +53,9 @@ function Create-ManagedLANGroups {
                 -Description "This group is for authorized devices to connect to both the $domainSuffixName
                 network and internet"
         ) {
-            Write-Host "Successfully Created the Managed LAN Secure Group." -ForegroundColor Green
-        } else {
             Write-Host "Error Creating the Managed LAN Secure Group. Please check the settings and try again. " -ForegroundColor Red
+        } else {
+            Write-Host "Successfully Created the Managed LAN Secure Group." -ForegroundColor Green
         }
     } else {
         Write-Host "Secure Managed LAN Group Exists" -ForegroundColor Green
@@ -72,9 +72,9 @@ function Create-ManagedLANGroups {
                 -Path "OU=Managed LAN,OU=EpiOn,DC=$domainPrefixName,DC=$domainSuffixName" `
                 -Description "This group is for devices to only access the internet" 
         ) {
-            Write-Host "Successfully Created the Managed LAN Internet Only Group." -ForegroundColor Green
-        } else {
             Write-Host "Error Creating the Managed LAN Internet Only Group. Please check the settings and try again. " -ForegroundColor Red
+        } else {
+            Write-Host "Successfully Created the Managed LAN Internet Only Group." -ForegroundColor Green
         }
     } else {
         Write-Host "Internet Only Managed LAN Group Exists" -ForegroundColor Green
