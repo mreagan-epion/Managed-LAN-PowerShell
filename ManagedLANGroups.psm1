@@ -14,13 +14,13 @@ function Get-ManagedLANGroups {
             return $false              
     }
     else {
-        Write-Host "Secure Managed LAN Group Exists" -ForegroundColor Green
+        return $true
     } 
     if ($ManagedLANInternetOnlyExists -eq $null) {
             return $false
     }
     else {
-        Write-Host "Internet Only Managed LAN Group Exists" -ForegroundColor Green
+        return $true
     } 
 }
 
@@ -53,16 +53,16 @@ function Create-ManagedLANGroups {
                 -Description "This group is for authorized devices to connect to both the $domainSuffixName
                 network and internet"
         ) {
-            Write-Host "Error Creating the Managed LAN Secure Group. Please check the settings and try again. " -ForegroundColor Red
-        } else {
             Write-Host "Successfully Created the Managed LAN Secure Group." -ForegroundColor Green
+        } else {
+            Write-Host "Error Creating the Managed LAN Secure Group. Please check the settings and try again. " -ForegroundColor Red
         }
     } else {
         Write-Host "Secure Managed LAN Group Exists" -ForegroundColor Green
     } 
 
     if ($ManagedLANInternetOnlyExists -eq $null) {
-        Write-Host "Creating Internet Only Managed LAN Group"
+        Write-Host "Creating Internet Only Managed LAN Group" -ForegroundColor Yellow
         if (New-ADGroup `
                 -Name "$ManagedLanInternetOnly" `
                 -SamAccountName "$ManagedLanInternetOnly" `
@@ -72,9 +72,9 @@ function Create-ManagedLANGroups {
                 -Path "OU=Managed LAN,OU=EpiOn,DC=$domainPrefixName,DC=$domainSuffixName" `
                 -Description "This group is for devices to only access the internet" 
         ) {
-            Write-Host "Error Creating the Managed LAN Internet Only Group. Please check the settings and try again. " -ForegroundColor Red
-        } else {
             Write-Host "Successfully Created the Managed LAN Internet Only Group." -ForegroundColor Green
+        } else {
+            Write-Host "Error Creating the Managed LAN Internet Only Group. Please check the settings and try again. " -ForegroundColor Red
         }
     } else {
         Write-Host "Internet Only Managed LAN Group Exists" -ForegroundColor Green
