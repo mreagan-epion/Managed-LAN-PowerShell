@@ -41,6 +41,10 @@ function Create-ADStructure {
         [Parameter()]
         [string] $domainSuffixName = 'local'
     )
+
+    Import-Module ActiveDirectory
+    $domainPrefixName = (Get-ADDomain).name
+
     #EpiOn OU
     if ([adsi]::Exists("LDAP://OU=epion,DC=$domainPrefixName,DC=$domainSuffixName")) {
         Write-Host 'EpiOn OU Exists' -ForegroundColor Green
