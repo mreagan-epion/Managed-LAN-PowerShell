@@ -24,6 +24,8 @@ function Get-ManagedLANGroups {
     } 
 }
 
+#Creates the Managed LAN Groups
+#I also recognize there is a bug in the logic of the "main" script as to how it returns the $true message. Will work on that later. 
 function Create-ManagedLANGroups {
     param()
 
