@@ -10,7 +10,7 @@ function Get-ADStructure {
     $domainPrefixName = (Get-ADDomain).name
 
     #EpiOn OU
-    if ([adsi]::Exists("LDAP://OU=epion,DC=$domainPrefixName,DC=$domainSuffixName") -and 
+    if  ([adsi]::Exists("LDAP://OU=epion,DC=$domainPrefixName,DC=$domainSuffixName") -and 
     #Managed LAN OU
         ([adsi]::Exists("LDAP://OU=Managed LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName") -and
 
