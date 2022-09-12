@@ -50,8 +50,7 @@ function Create-ManagedLANGroups {
         } else {
             Write-Host "Successfully Created the Managed LAN Secure Group." -ForegroundColor Green
         }
-        }
-    else {
+    } else {
         Write-Host "Secure Managed LAN Group Exists"
     } 
 
@@ -70,8 +69,7 @@ function Create-ManagedLANGroups {
             } else {
                 Write-Host "Successfully Created the Managed LAN Internet Only Group." -ForegroundColor Green
             }
-            }
-    else {
+    } else {
         Write-Host "Internet Only Managed LAN Group Exists"
     } 
 }
