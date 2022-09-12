@@ -7,7 +7,7 @@ function Get-ADStructure {
     )
 
     Import-Module ActiveDirectory
-    $domainPrefixName = "(Get-ADDomain)$domainSuffixName"
+    $domainPrefixName = "(Get-ADDomain).name"
 
     #EpiOn OU
     if ([adsi]::Exists("LDAP://OU=epion,DC=$domainPrefixName,DC=$domainSuffixName") -and 
