@@ -28,11 +28,18 @@ function Create-ManagedLANGroups {
     param()
 
     Import-Module ActiveDirectory
+    Import-Module .\ActiveDirectoryStructure.psm1
 
+    #Group Names
     $ManagedLANSecure="Managed LAN VLAN 1 - Secure"
     $ManagedLANInternetOnly="Managed LAN VLAN 20 - Internet Only"
+
+    #Variable to put into the next couple of if statements
     $ManagedLANSecureExists = Get-ADGroup -LDAPFilter "(SAMAccountName=$ManagedLANSecure)"
     $ManagedLANInternetOnlyExists= Get-ADGroup -LDAPFilter "(SAMAccountName=$ManagedLANInternetOnly)"
+
+    $domainPrefixName = Get-ADStructureName -suffixOrPrefix $true
+    $domainSuffixName = Get-ADStructureName -suffixOrPrefix $false
 
     if ($ManagedLANSecureExists -eq $null) {
         Write-Host "Creating Secure Managed LAN Group" -ForegroundColor Yellow
@@ -42,8 +49,8 @@ function Create-ManagedLANGroups {
             -GroupCategory Security `
             -GroupScope Global `
             -DisplayName "$ManagedLanSecure" `
-            -Path "OU=Managed LAN,OU=EpiOn,DC=$DomainPrefixName,DC=$DomainSuffixName" `
-            -Description "This group is for authorized devices to connect to both the $DomainSuffixName
+            -Path "OU=Managed LAN,OU=EpiOn,DC=$domainPrefixName,DC=$domainSuffixName" `
+            -Description "This group is for authorized devices to connect to both the $domainSuffixName
             network and internet"
         if ($ManagedLANSecureExists -eq $null) {
             Write-Host "Error Creating the Managed LAN Secure Group. Please check the settings and try again. " -ForegroundColor Red
@@ -62,7 +69,7 @@ function Create-ManagedLANGroups {
                 -GroupCategory Security `
                 -GroupScope Global `
                 -DisplayName "$ManagedLanInternetOnly" `
-                -Path "OU=Managed LAN,OU=EpiOn,DC=$DomainPrefixName,DC=$DomainSuffixName" `
+                -Path "OU=Managed LAN,OU=EpiOn,DC=$domainPrefixName,DC=$domainSuffixName" `
                 -Description "This group is for devices to only access the internet" 
             if ($ManagedLANInternetOnlyExists -eq $null) {
                 Write-Host "Error Creating the Managed LAN Internet Only Group. Please check the settings and try again. " -ForegroundColor Red
