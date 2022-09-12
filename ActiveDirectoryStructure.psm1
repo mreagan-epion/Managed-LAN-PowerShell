@@ -39,7 +39,7 @@ function Get-ADStructure {
 function Create-ADStructure {
     param(
         [Parameter()]
-        [string] $domainSuffixName = '.local'
+        [string] $domainSuffixName = 'local'
     )
     #EpiOn OU
     if ([adsi]::Exists("LDAP://OU=epion,DC=$domainPrefixName,DC=$domainSuffixName")) {
