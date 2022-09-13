@@ -3,6 +3,7 @@
 Import-Module .\ActiveDirectoryStructure.psm1
 Import-Module .\ManagedLANGroups.psm1
 Import-Module .\passwordPolicyOveride.psm1
+Import-Module .\createManagedLANDevices.psm1
 
 #Checks if AD OU Stucture is in place
 if (Get-ADStructure) {
