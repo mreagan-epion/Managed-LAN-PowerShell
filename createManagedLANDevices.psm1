@@ -37,7 +37,7 @@ function Import-ManagedLANDevices {
     #will generate errors.
     $DomainServer=(Get-ADDomain).PDCEmulator
 
-    foreach ($list in $array) {
+    foreach ($list in $allDeviceLists) {
         foreach ($device in $list) {
             foreach ($group in $groups) {
                 foreach ($path in $OUPathGroup) {
