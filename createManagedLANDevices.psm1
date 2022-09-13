@@ -37,51 +37,51 @@ function Import-ManagedLANDevices {
     #will generate errors.
     $DomainServer=(Get-ADDomain).PDCEmulator
 
-    foreach ($list in $allDeviceLists) {
-        foreach ($device in $list) {
-            foreach ($group in $groups) {
-                foreach ($path in $OUPathGroup) {
-                    if (Get-ADUser -Filter "sAMAccountName -eq '$device'") {
-                        "Desktop User Account '$device' Exists Already"}
-                    else {
-                    Write-Host "Creating Desktop User '$device'"
-                    New-ADUser `
-                        -Server $DomainServer `
-                        -Name $device `
-                        -Path "$path" `
-                        -UserPrincipalName "$device$DomainUPN" `
-                        -AccountPassword (convertto-securestring "%Ehy7QX#l@CWo$A*5IkO" -AsPlainText -Force) `
-                        -Enabled $true `
-                        -PasswordNeverExpires $true `
-                        -AllowReversiblePasswordEncryption $true 
-                                   
-                    Add-ADGroupMember `
-                        -Server $DomainServer `
-                        -identity "$group" `
-                        -Members $device
-        
-                    Get-ADUser `
-                        -Server $DomainServer `
-                        -identity $device | Set-ADUser `
-                        -Server $DomainServer `
-                        -Replace @{primarygroupid=$group.primarygrouptoken}
-        
-                    Remove-ADGroupMember `
-                        -Server $DomainServer `
-                        -identity "Domain Users" `
-                        -Members "$device" `
-                        -confirm:$false
-        
-                    Set-ADAccountPassword `
-                        -Server $DomainServer `
-                        -Identity $device `
-                        -NewPassword (ConvertTo-SecureString `
-                            -AsPlainText $device `
-                            -Force) `
-                            -Reset `
+        foreach ($list in $allDeviceLists) {
+            foreach ($device in $list) {
+                foreach ($group in $groups) {
+                    foreach ($path in $OUPathGroup) {
+                        if (Get-ADUser -Filter "sAMAccountName -eq '$device'") {
+                            "Desktop User Account '$device' Exists Already"}
+                        else {
+                        Write-Host "Creating Desktop User '$device'"
+                        New-ADUser `
+                            -Server $DomainServer `
+                            -Name $device `
+                            -Path "$path" `
+                            -UserPrincipalName "$device$DomainUPN" `
+                            -AccountPassword (convertto-securestring "%Ehy7QX#l@CWo$A*5IkO" -AsPlainText -Force) `
+                            -Enabled $true `
+                            -PasswordNeverExpires $true `
+                            -AllowReversiblePasswordEncryption $true 
+                                    
+                        Add-ADGroupMember `
+                            -Server $DomainServer `
+                            -identity "$group" `
+                            -Members $device
+            
+                        Get-ADUser `
+                            -Server $DomainServer `
+                            -identity $device | Set-ADUser `
+                            -Server $DomainServer `
+                            -Replace @{primarygroupid=$group.primarygrouptoken}
+            
+                        Remove-ADGroupMember `
+                            -Server $DomainServer `
+                            -identity "Domain Users" `
+                            -Members "$device" `
+                            -confirm:$false
+            
+                        Set-ADAccountPassword `
+                            -Server $DomainServer `
+                            -Identity $device `
+                            -NewPassword (ConvertTo-SecureString `
+                                -AsPlainText $device `
+                                -Force) `
+                                -Reset `
+                    }
                 }
             }
         }
     }
-}
 }
