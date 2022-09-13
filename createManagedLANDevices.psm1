@@ -1,5 +1,4 @@
 
-#https://epionit-my.sharepoint.com/:f:/g/personal/mreagan_epion_com/EimqFDGFlRBDraquR-uzIM8Bkdy8Gs2VFi10yp1zQ4nRHg?e=t9f44x
 
 
 function Import-ManagedLANDevices {
@@ -13,7 +12,7 @@ function Import-ManagedLANDevices {
     $MiscUserAccounts = Import-CSV "C:\temp\Misc.csv"
 
     #Used in the Device Creation Loop
-    $allDeviceLists = [$DesktopUserAccounts, $PhoneUserAccounts, $PrinterUserAccounts, $ThinClientUserAccounts, $MiscUserAccounts]
+    $allDeviceLists = @($DesktopUserAccounts, $PhoneUserAccounts, $PrinterUserAccounts, $ThinClientUserAccounts, $MiscUserAccounts)
 
     #OU Path for each device type
     $DesktopOUPath = "OU=Desktops,OU=Managed LAN,OU=EpiOn,DC=$DomainPrefixName,DC=$DomainSuffixName"
@@ -37,10 +36,7 @@ function Import-ManagedLANDevices {
     $DomainServer=(Get-ADDomain).PDCEmulator
 
     $allDeviceLists | ForEach-Object {
-        switch ($x) {
-            condition {  }
-            Default {}
-        }
+        Write-Host $($_.line)
     }
 
 }
