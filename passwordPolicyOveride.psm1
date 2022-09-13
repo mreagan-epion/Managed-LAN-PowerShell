@@ -3,10 +3,17 @@
 
 #This checks if the Managed LAN Polcies exist, if not, the error message will be captured into the POLICYERROROUTPUT Variable. 
 $POLICYERROROUTPUT
-try {
-    Invoke-Expression "Get-ADFinegrainedPasswordPolicy ManagedLAN_PSO" -ErrorVariable POLICYERROROUTPUT
-} catch {
 
+function Get-PolicyErrorOutput {
+
+    param()
+
+    try {
+        Invoke-Expression "Get-ADFinegrainedPasswordPolicy ManagedLAN_PSO" -ErrorVariable POLICYERROROUTPUT
+    } catch {
+    
+    }
+    
 }
 
 function Get-PasswordPolicy {
@@ -48,9 +55,9 @@ function Create-PasswordPolicy {
     }
 
     #Checks to make sure the Policies were created
-    if ($POLICYERROROUTPUT -contains "Cannot find an object with identity: 'ManagedLAN_PSO'") {
-        Write-Host "Password Policies Successfully Created" -ForegroundColor Green
-    } else {
+    if (Get-PolicyErrorOutput | $POLICYERROROUTPUT -contains "Cannot find an object with identity: 'ManagedLAN_PSO'") {
         Write-Host "Failed to Create Password Policies" -ForegroundColor Red
+    } else {
+        Write-Host "Password Policies Successfully Created" -ForegroundColor Green
     }
 }
