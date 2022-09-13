@@ -24,3 +24,6 @@ if (Get-PasswordPolicy) {
 } else {
     Create-PasswordPolicy
 }
+
+#Create Managed LAN Users
+Import-ManagedLANDevices
