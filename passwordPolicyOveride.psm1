@@ -55,7 +55,8 @@ function Create-PasswordPolicy {
     }
 
     #Checks to make sure the Policies were created
-    if (Get-PolicyErrorOutput | $POLICYERROROUTPUT -contains "Cannot find an object with identity: 'ManagedLAN_PSO'") {
+    Get-PolicyErrorOutput
+    if ($POLICYERROROUTPUT -contains "Cannot find an object with identity: 'ManagedLAN_PSO'") {
         Write-Host "Failed to Create Password Policies" -ForegroundColor Red
     } else {
         Write-Host "Password Policies Successfully Created" -ForegroundColor Green
