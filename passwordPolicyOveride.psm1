@@ -31,7 +31,7 @@ function Create-PasswordPolicy {
     try {
         Get-ADFinegrainedPasswordPolicy ManagedLAN_PSO
     } catch {
-        New-ADFineGrainedPasswordPolicy 
+        New-ADFineGrainedPasswordPolicy `
             -Name "ManagedLAN_PSO" `
             -Precedence 100 `
             -Description "The Managed LAN Password Policy" `
@@ -39,10 +39,10 @@ function Create-PasswordPolicy {
             -MinPasswordLength 12 `
             -ReversibleEncryptionEnabled $true `
             -ComplexityEnabled $false 
-        Add-ADFineGrainedPasswordPolicySubject 
+        Add-ADFineGrainedPasswordPolicySubject `
             ManagedLAN_PSO `
             -Subjects 'Managed LAN VLAN 1 - Secure' 
-        Add-ADFineGrainedPasswordPolicySubject 
+        Add-ADFineGrainedPasswordPolicySubject `
             ManagedLAN_PSO `
             -Subjects 'Managed LAN VLAN 20 - Internet Only'
     }
