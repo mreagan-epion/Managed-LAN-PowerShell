@@ -36,20 +36,18 @@ function Import-ManagedLANDevices {
     #Used to specifiy a specific server for creating accounts. Without this, the script might hit more than one DC and that
     #will generate errors.
     $DomainServer = (Get-ADDomain).PDCEmulator
-    $listIncrement = 0
-    $groupIncrement = 0
-    $pathIncrement = 0
-        foreach ($list in $allDeviceLists) {
-            foreach ($device in $list[$listIncrement]) {
-                if (Get-ADUser -Filter "sAMAccountName -eq '$device'") {
-                    "Desktop User Account '$device' Exists Already"}
+    
+        $allDeviceLists | ForEach-Object {
+            $_.$allDeviceLists | ForEach-Object {
+                if (Get-ADUser -Filter "sAMAccountName -eq '$($_.line)'") {
+                    "Desktop User Account '$($_.line)' Exists Already"}
                 else {
-                Write-Host "Creating Desktop User '$device'"
+                Write-Host "Creating Desktop User '$($_.line)'"
                 New-ADUser `
                     -Server $DomainServer `
-                    -Name $device `
+                    -Name $($_.line) `
                     -Path "$OUPathList[$pathIncrement]" `
-                    -UserPrincipalName "$device$DomainUPN" `
+                    -UserPrincipalName "$($_.line)$DomainUPN" `
                     -AccountPassword (convertto-securestring "%Ehy7QX#l@CWo$A*5IkO" -AsPlainText -Force) `
                     -Enabled $true `
                     -PasswordNeverExpires $true `
@@ -58,31 +56,31 @@ function Import-ManagedLANDevices {
                 Add-ADGroupMember `
                     -Server $DomainServer `
                     -identity "$groups[$groupIncrement]" `
-                    -Members $device
-    
+                    -Members $($_.line)
+
                 Get-ADUser `
                     -Server $DomainServer `
-                    -identity $device | Set-ADUser `
+                    -identity $($_.line) | Set-ADUser `
                     -Server $DomainServer `
                     -Replace @{primarygroupid=$groups[$groupIncrement].primarygrouptoken}
-    
+
                 Remove-ADGroupMember `
                     -Server $DomainServer `
                     -identity "Domain Users" `
-                    -Members "$device" `
+                    -Members "$($_.line)" `
                     -confirm:$false
-    
+
                 Set-ADAccountPassword `
                     -Server $DomainServer `
-                    -Identity $device `
+                    -Identity $($_.line) `
                     -NewPassword (ConvertTo-SecureString `
-                        -AsPlainText $device `
+                        -AsPlainText $($_.line) `
                         -Force) `
                         -Reset `
             }
         }
-        $listIncrement++
-        $pathIncrement++
-        $groupIncrement++
+    $listIncrement++
+    $pathIncrement++
+    $groupIncrement++
     }
 }
