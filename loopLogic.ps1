@@ -43,14 +43,8 @@
     $pathIncrement = 0
     $deviceIncrement = 0
         foreach ($list in $allDeviceLists) {
-            foreach ($device in $list) {
-                if ($allDeviceLists[$listIncrement] -contains $device) {
-                    Write-Host "$device belongs in the " $OUPathList[$listIncrement] " path."
-                } else {
-                    Write-Host "False" -ForegroundColor red
-                }
-        }
+            $list | ForEach-Object {
+                    Write-Host $($_.line) " belongs in the " $OUPathList[$listIncrement] " path."}
         $listIncrement++
     }
-    write-host "List is $listIncrement and group is $groupIncrement and device is $deviceIncrement"
 # }

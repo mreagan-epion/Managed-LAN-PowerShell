@@ -5,8 +5,8 @@ function Get-ManagedLANGroups {
 
     Import-Module ActiveDirectory
 
-    $ManagedLANSecure="Managed LAN VLAN 1 - Secure"
-    $ManagedLANInternetOnly="Managed LAN VLAN 20 - Internet Only"
+    $ManagedLANSecure="Managed_LAN_VLAN_1_Secure"
+    $ManagedLANInternetOnly="Managed_LAN_VLAN_20_Internet_Only"
     $ManagedLANSecureExists = Get-ADGroup -LDAPFilter "(SAMAccountName=$ManagedLANSecure)"
     $ManagedLANInternetOnlyExists= Get-ADGroup -LDAPFilter "(SAMAccountName=$ManagedLANInternetOnly)"
     #Checks to see if Managed LAN Groups exists
@@ -33,8 +33,8 @@ function Create-ManagedLANGroups {
     Import-Module .\ActiveDirectoryStructure.psm1
 
     #Group Names
-    $ManagedLANSecure="Managed LAN VLAN 1 - Secure"
-    $ManagedLANInternetOnly="Managed LAN VLAN 20 - Internet Only"
+    $ManagedLANSecure="Managed_LAN_VLAN_1_Secure"
+    $ManagedLANInternetOnly="Managed_LAN_VLAN_20_Internet_Only"
 
     #Variable to put into the next couple of if statements
     $ManagedLANSecureExists = Get-ADGroup -LDAPFilter "(SAMAccountName=$ManagedLANSecure)"
@@ -51,7 +51,7 @@ function Create-ManagedLANGroups {
                 -GroupCategory Security `
                 -GroupScope Global `
                 -DisplayName "$ManagedLanSecure" `
-                -Path "OU=Managed LAN,OU=EpiOn,DC=$domainPrefixName,DC=$domainSuffixName" `
+                -Path "OU=Managed_LAN,OU=EpiOn,DC=$domainPrefixName,DC=$domainSuffixName" `
                 -Description "This group is for authorized devices to connect to both the $domainSuffixName
                 network and internet"
         ) {
@@ -71,7 +71,7 @@ function Create-ManagedLANGroups {
                 -GroupCategory Security `
                 -GroupScope Global `
                 -DisplayName "$ManagedLanInternetOnly" `
-                -Path "OU=Managed LAN,OU=EpiOn,DC=$domainPrefixName,DC=$domainSuffixName" `
+                -Path "OU=Managed_LAN,OU=EpiOn,DC=$domainPrefixName,DC=$domainSuffixName" `
                 -Description "This group is for devices to only access the internet" 
         ) {
             Write-Host "Error Creating the Managed LAN Internet Only Group. Please check the settings and try again. " -ForegroundColor Red

@@ -1,6 +1,7 @@
 
 
 
+$DEFAULTSUFFIXNAME = "local"
 function Import-ManagedLANDevices {
     param(
         [Parameter()]
