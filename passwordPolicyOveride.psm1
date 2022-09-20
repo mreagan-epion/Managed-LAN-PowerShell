@@ -48,10 +48,10 @@ function Create-PasswordPolicy {
             -ComplexityEnabled $false 
         Add-ADFineGrainedPasswordPolicySubject `
             ManagedLAN_PSO `
-            -Subjects 'Managed LAN VLAN 1 - Secure' 
+            -Subjects 'Managed_LAN_VLAN_1_Secure' 
         Add-ADFineGrainedPasswordPolicySubject `
             ManagedLAN_PSO `
-            -Subjects 'Managed LAN VLAN 20 - Internet Only'
+            -Subjects 'Managed_LAN_VLAN_20_Internet_Only'
     }
 
     #Checks to make sure the Policies were created
