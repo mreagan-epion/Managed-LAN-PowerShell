@@ -1,321 +1,321 @@
 #Version 1.5.3
 #Developed By Corey and Matthew
 #the active directory module allows us to create AD accounts and groups
-Import-Module activedirectory
-#General Variables
-$CTemp="C:\Temp"
-#Sorted Device CSV List
-$DesktopUserAccounts=import-csv "$CTemp\Desktop.csv"
-$PhoneUserAccounts=import-csv "$CTemp\Phone.csv"
-$PrinterUserAccounts=import-csv "$CTemp\Printer.csv"
-$ThinClientUserAccounts=import-csv "$CTemp\ThinClient.csv"
-$MiscUserAccounts=import-csv "$CTemp\Misc.csv"
-#AD Structure
-$DomainPrefixName=(Get-ADDomain).name
-$DomainSuffixName="local" #Can be changed to "net", "biz", "com", etc
-#Creating OU structure if it doesn't exist
-#EpiOn OU
-if ([adsi]::Exists("LDAP://OU=epion,DC=$DomainPrefixName,DC=$DomainSuffixName")) {Write-Host 'EpiOn OU Exists'}
-else {Write-Host 'Creating EpiOn OU'
-New-ADOrganizationalUnit -Name 'EpiOn' -Path "DC=$DomainPrefixName,DC=$DomainSuffixName"}
-#Managed LAN OU
-if ([adsi]::Exists("LDAP://OU=Managed LAN,OU=epion,DC=$DomainPrefixName,DC=$DomainSuffixName")) {Write-Host 'Managed LAN OU Exists'}
-else {Write-Host 'Creating Managed LAN OU'
-New-ADOrganizationalUnit -Name 'Managed LAN' -Path "OU=EpiOn,DC=$DomainPrefixName,DC=$DomainSuffixName"}
-#Desktop OU
-if ([adsi]::Exists("LDAP://OU=Desktops,OU=Managed LAN,OU=epion,DC=$DomainPrefixName,DC=$DomainSuffixName")) {Write-Host 'Desktops OU Exists'}
-else {Write-Host 'Creating Desktops OU'
-New-ADOrganizationalUnit -Name 'Desktops' -Path "OU=Managed LAN,OU=EpiOn,DC=$DomainPrefixName,DC=$DomainSuffixName"}
-#Phone OU
-if ([adsi]::Exists("LDAP://OU=Phones,OU=Managed LAN,OU=epion,DC=$DomainPrefixName,DC=$DomainSuffixName")) {Write-Host 'Phones OU Exists'}
-else {Write-Host 'Creating Phones OU'
-New-ADOrganizationalUnit -Name 'Phones' -Path "OU=Managed LAN,OU=EpiOn,DC=$DomainPrefixName,DC=$DomainSuffixName"}
-#Printer OU
-if ([adsi]::Exists("LDAP://OU=Printers,OU=Managed LAN,OU=epion,DC=$DomainPrefixName,DC=$DomainSuffixName")) {Write-Host 'Printers OU Exists'}
-else {Write-Host 'Creating Printers OU'
-New-ADOrganizationalUnit -Name 'Printers' -Path "OU=Managed LAN,OU=EpiOn,DC=$DomainPrefixName,DC=$DomainSuffixName"}
-#Thin Client OU
-if ([adsi]::Exists("LDAP://OU=Thin Clients,OU=Managed LAN,OU=epion,DC=$DomainPrefixName,DC=$DomainSuffixName")) {Write-Host 'Thin Clients OU Exists'}
-else {Write-Host 'Creating Thin Clients OU'
-New-ADOrganizationalUnit -Name 'Thin Clients' -Path "OU=Managed LAN,OU=EpiOn,DC=$DomainPrefixName,DC=$DomainSuffixName"}
-#Misc OU
-if ([adsi]::Exists("LDAP://OU=Misc,OU=Managed LAN,OU=epion,DC=$DomainPrefixName,DC=$DomainSuffixName")) {Write-Host 'Misc OU Exists'}
-else {Write-Host 'Creating Misc OU'
-New-ADOrganizationalUnit -Name 'Misc' -Path "OU=Managed LAN,OU=EpiOn,DC=$DomainPrefixName,DC=$DomainSuffixName"}
+# Import-Module activedirectory
+# #General Variables
+# $CTemp="C:\Temp"
+# #Sorted Device CSV List
+# $DesktopUserAccounts=import-csv "$CTemp\Desktop.csv"
+# $PhoneUserAccounts=import-csv "$CTemp\Phone.csv"
+# $PrinterUserAccounts=import-csv "$CTemp\Printer.csv"
+# $ThinClientUserAccounts=import-csv "$CTemp\ThinClient.csv"
+# $MiscUserAccounts=import-csv "$CTemp\Misc.csv"
+# #AD Structure
+# $DomainPrefixName=(Get-ADDomain).name
+# $DomainSuffixName="local" #Can be changed to "net", "biz", "com", etc
+# #Creating OU structure if it doesn't exist
+# #EpiOn OU
+# if ([adsi]::Exists("LDAP://OU=epion,DC=$DomainPrefixName,DC=$DomainSuffixName")) {Write-Host 'EpiOn OU Exists'}
+# else {Write-Host 'Creating EpiOn OU'
+# New-ADOrganizationalUnit -Name 'EpiOn' -Path "DC=$DomainPrefixName,DC=$DomainSuffixName"}
+# #Managed LAN OU
+# if ([adsi]::Exists("LDAP://OU=Managed LAN,OU=epion,DC=$DomainPrefixName,DC=$DomainSuffixName")) {Write-Host 'Managed LAN OU Exists'}
+# else {Write-Host 'Creating Managed LAN OU'
+# New-ADOrganizationalUnit -Name 'Managed LAN' -Path "OU=EpiOn,DC=$DomainPrefixName,DC=$DomainSuffixName"}
+# #Desktop OU
+# if ([adsi]::Exists("LDAP://OU=Desktops,OU=Managed LAN,OU=epion,DC=$DomainPrefixName,DC=$DomainSuffixName")) {Write-Host 'Desktops OU Exists'}
+# else {Write-Host 'Creating Desktops OU'
+# New-ADOrganizationalUnit -Name 'Desktops' -Path "OU=Managed LAN,OU=EpiOn,DC=$DomainPrefixName,DC=$DomainSuffixName"}
+# #Phone OU
+# if ([adsi]::Exists("LDAP://OU=Phones,OU=Managed LAN,OU=epion,DC=$DomainPrefixName,DC=$DomainSuffixName")) {Write-Host 'Phones OU Exists'}
+# else {Write-Host 'Creating Phones OU'
+# New-ADOrganizationalUnit -Name 'Phones' -Path "OU=Managed LAN,OU=EpiOn,DC=$DomainPrefixName,DC=$DomainSuffixName"}
+# #Printer OU
+# if ([adsi]::Exists("LDAP://OU=Printers,OU=Managed LAN,OU=epion,DC=$DomainPrefixName,DC=$DomainSuffixName")) {Write-Host 'Printers OU Exists'}
+# else {Write-Host 'Creating Printers OU'
+# New-ADOrganizationalUnit -Name 'Printers' -Path "OU=Managed LAN,OU=EpiOn,DC=$DomainPrefixName,DC=$DomainSuffixName"}
+# #Thin Client OU
+# if ([adsi]::Exists("LDAP://OU=Thin Clients,OU=Managed LAN,OU=epion,DC=$DomainPrefixName,DC=$DomainSuffixName")) {Write-Host 'Thin Clients OU Exists'}
+# else {Write-Host 'Creating Thin Clients OU'
+# New-ADOrganizationalUnit -Name 'Thin Clients' -Path "OU=Managed LAN,OU=EpiOn,DC=$DomainPrefixName,DC=$DomainSuffixName"}
+# #Misc OU
+# if ([adsi]::Exists("LDAP://OU=Misc,OU=Managed LAN,OU=epion,DC=$DomainPrefixName,DC=$DomainSuffixName")) {Write-Host 'Misc OU Exists'}
+# else {Write-Host 'Creating Misc OU'
+# New-ADOrganizationalUnit -Name 'Misc' -Path "OU=Managed LAN,OU=EpiOn,DC=$DomainPrefixName,DC=$DomainSuffixName"}
 
-$DesktopOUPath="OU=Desktops,OU=Managed LAN,OU=EpiOn,DC=$DomainPrefixName,DC=$DomainSuffixName"
-$PhonesOUPath="OU=Phones,OU=Managed LAN,OU=EpiOn,DC=$DomainPrefixName,DC=$DomainSuffixName"
-$PrintersOUPath="OU=Printers,OU=Managed LAN,OU=EpiOn,DC=$DomainPrefixName,DC=$DomainSuffixName"
-$ThinClientsOUPath="OU=Thin Clients,OU=Managed LAN,OU=EpiOn,DC=$DomainPrefixName,DC=$DomainSuffixName"
-$MiscOUPath="OU=Misc,OU=Managed LAN,OU=EpiOn,DC=$DomainPrefixName,DC=$DomainSuffixName"
+# $DesktopOUPath="OU=Desktops,OU=Managed LAN,OU=EpiOn,DC=$DomainPrefixName,DC=$DomainSuffixName"
+# $PhonesOUPath="OU=Phones,OU=Managed LAN,OU=EpiOn,DC=$DomainPrefixName,DC=$DomainSuffixName"
+# $PrintersOUPath="OU=Printers,OU=Managed LAN,OU=EpiOn,DC=$DomainPrefixName,DC=$DomainSuffixName"
+# $ThinClientsOUPath="OU=Thin Clients,OU=Managed LAN,OU=EpiOn,DC=$DomainPrefixName,DC=$DomainSuffixName"
+# $MiscOUPath="OU=Misc,OU=Managed LAN,OU=EpiOn,DC=$DomainPrefixName,DC=$DomainSuffixName"
 
-$ManagedLANSecure="Managed LAN VLAN 1 - Secure"
-$ManagedLANInternetOnly="Managed LAN VLAN 20 - Internet Only"
-$ManagedLANSecureExists = Get-ADGroup -LDAPFilter "(SAMAccountName=$ManagedLANSecure)"
-$ManagedLANInternetOnlyExists= Get-ADGroup -LDAPFilter "(SAMAccountName=$ManagedLANInternetOnly)"
-#Checks to see if Managed LAN Groups exists
-if ($ManagedLANSecureExists -eq $null) {Write-Host "Creating Secure Managed LAN Group"
-    New-ADGroup `
-        -Name "$ManagedLanSecure" `
-        -SamAccountName "$ManagedLanSecure" `
-        -GroupCategory Security `
-        -GroupScope Global `
-        -DisplayName "$ManagedLanSecure" `
-        -Path "OU=Managed LAN,OU=EpiOn,DC=$DomainPrefixName,DC=$DomainSuffixName" `
-        -Description "This group is for authorized devices to connect to both the $DomainSuffixName
-	 network and internet"
-        }
-else {Write-Host "Secure Managed LAN Group Exists"} 
-if ($ManagedLANInternetOnlyExists -eq $null) {Write-Host "Creating Internet Only Managed LAN Group"
-    New-ADGroup `
-        -Name "$ManagedLanInternetOnly" `
-        -SamAccountName "$ManagedLanInternetOnly" `
-        -GroupCategory Security `
-        -GroupScope Global `
-        -DisplayName "$ManagedLanInternetOnly" `
-        -Path "OU=Managed LAN,OU=EpiOn,DC=$DomainPrefixName,DC=$DomainSuffixName" `
-        -Description "This group is for devices to only access the internet"
-        }
-else {Write-Host "Internet Only Managed LAN Group Exists"} 
+# $ManagedLANSecure="Managed LAN VLAN 1 - Secure"
+# $ManagedLANInternetOnly="Managed LAN VLAN 20 - Internet Only"
+# $ManagedLANSecureExists = Get-ADGroup -LDAPFilter "(SAMAccountName=$ManagedLANSecure)"
+# $ManagedLANInternetOnlyExists= Get-ADGroup -LDAPFilter "(SAMAccountName=$ManagedLANInternetOnly)"
+# #Checks to see if Managed LAN Groups exists
+# if ($ManagedLANSecureExists -eq $null) {Write-Host "Creating Secure Managed LAN Group"
+#     New-ADGroup `
+#         -Name "$ManagedLanSecure" `
+#         -SamAccountName "$ManagedLanSecure" `
+#         -GroupCategory Security `
+#         -GroupScope Global `
+#         -DisplayName "$ManagedLanSecure" `
+#         -Path "OU=Managed LAN,OU=EpiOn,DC=$DomainPrefixName,DC=$DomainSuffixName" `
+#         -Description "This group is for authorized devices to connect to both the $DomainSuffixName
+# 	 network and internet"
+#         }
+# else {Write-Host "Secure Managed LAN Group Exists"} 
+# if ($ManagedLANInternetOnlyExists -eq $null) {Write-Host "Creating Internet Only Managed LAN Group"
+#     New-ADGroup `
+#         -Name "$ManagedLanInternetOnly" `
+#         -SamAccountName "$ManagedLanInternetOnly" `
+#         -GroupCategory Security `
+#         -GroupScope Global `
+#         -DisplayName "$ManagedLanInternetOnly" `
+#         -Path "OU=Managed LAN,OU=EpiOn,DC=$DomainPrefixName,DC=$DomainSuffixName" `
+#         -Description "This group is for devices to only access the internet"
+#         }
+# else {Write-Host "Internet Only Managed LAN Group Exists"} 
 
-#Default Security Group Assignments
-$DesktopGroup=Get-ADGroup "Managed LAN VLAN 1 - Secure" -Properties @("PrimaryGroupToken")
-$PhoneGroup=Get-ADGroup "Managed LAN VLAN 20 - Internet Only" -Properties @("PrimaryGroupToken")
-$PrinterGroup=Get-ADGroup "Managed LAN VLAN 1 - Secure" -Properties @("PrimaryGroupToken")
-$ThinClientGroup=Get-ADGroup "Managed LAN VLAN 1 - Secure" -Properties @("PrimaryGroupToken")
-$MiscGroup=Get-ADGroup "Managed LAN VLAN 20 - Internet Only" -Properties @("PrimaryGroupToken")
+# #Default Security Group Assignments
+# $DesktopGroup=Get-ADGroup "Managed LAN VLAN 1 - Secure" -Properties @("PrimaryGroupToken")
+# $PhoneGroup=Get-ADGroup "Managed LAN VLAN 20 - Internet Only" -Properties @("PrimaryGroupToken")
+# $PrinterGroup=Get-ADGroup "Managed LAN VLAN 1 - Secure" -Properties @("PrimaryGroupToken")
+# $ThinClientGroup=Get-ADGroup "Managed LAN VLAN 1 - Secure" -Properties @("PrimaryGroupToken")
+# $MiscGroup=Get-ADGroup "Managed LAN VLAN 20 - Internet Only" -Properties @("PrimaryGroupToken")
 
-$DesktopCSVLine=$DesktopUserAccounts
-$DesktopOU=$DesktopOUPath
-$PhoneCSVLine=$PhoneUserAccounts
-$PhoneOU=$PhonesOUPath
-$PrinterCSVLine=$PrinterUserAccounts
-$PrinterOU=$PrintersOUPath
-$ThinClientCSVLine=$ThinClientUserAccounts
-$ThinClientOU=$ThinClientOUPath
-$MiscCSVLine=$MiscUserAccounts
-$MiscOU=$MiscOUPath
+# $DesktopCSVLine=$DesktopUserAccounts
+# $DesktopOU=$DesktopOUPath
+# $PhoneCSVLine=$PhoneUserAccounts
+# $PhoneOU=$PhonesOUPath
+# $PrinterCSVLine=$PrinterUserAccounts
+# $PrinterOU=$PrintersOUPath
+# $ThinClientCSVLine=$ThinClientUserAccounts
+# $ThinClientOU=$ThinClientOUPath
+# $MiscCSVLine=$MiscUserAccounts
+# $MiscOU=$MiscOUPath
 
-$DomainName = (Get-WmiObject Win32_ComputerSystem).Domain
+# $DomainName = (Get-WmiObject Win32_ComputerSystem).Domain
 
-$DomainUPN="@$DomainName"
-$DomainServer=(Get-ADDomain).PDCEmulator
-#Checks for and creates the Managed LAN PSO policy and apply it to the Managed LAN Security Groups
-try {
-    Get-ADFinegrainedPasswordPolicy ManagedLAN_PSO
-} catch {
-    New-ADFineGrainedPasswordPolicy -Name "ManagedLAN_PSO" -Precedence 100 -Description "The Managed LAN Password Policy" -DisplayName "Managed LAN PSO" -MinPasswordLength 12 -ReversibleEncryptionEnabled $true -ComplexityEnabled $false 
-    Add-ADFineGrainedPasswordPolicySubject ManagedLAN_PSO -Subjects 'Managed LAN VLAN 1 - Secure' 
-    Add-ADFineGrainedPasswordPolicySubject ManagedLAN_PSO -Subjects 'Managed LAN VLAN 20 - Internet Only'
-}
-#The next 5 loops create the user, sets the username and password as the MAC address, stores the password with reversible encryption, adds it the its respective group, sets that group as 
-#primary, and removes it from the Domain Users group.
+# $DomainUPN="@$DomainName"
+# $DomainServer=(Get-ADDomain).PDCEmulator
+# #Checks for and creates the Managed LAN PSO policy and apply it to the Managed LAN Security Groups
+# try {
+#     Get-ADFinegrainedPasswordPolicy ManagedLAN_PSO
+# } catch {
+#     New-ADFineGrainedPasswordPolicy -Name "ManagedLAN_PSO" -Precedence 100 -Description "The Managed LAN Password Policy" -DisplayName "Managed LAN PSO" -MinPasswordLength 12 -ReversibleEncryptionEnabled $true -ComplexityEnabled $false 
+#     Add-ADFineGrainedPasswordPolicySubject ManagedLAN_PSO -Subjects 'Managed LAN VLAN 1 - Secure' 
+#     Add-ADFineGrainedPasswordPolicySubject ManagedLAN_PSO -Subjects 'Managed LAN VLAN 20 - Internet Only'
+# }
+# #The next 5 loops create the user, sets the username and password as the MAC address, stores the password with reversible encryption, adds it the its respective group, sets that group as 
+# #primary, and removes it from the Domain Users group.
 
-#Desktops
-            $DesktopCSVLine | ForEach-Object{
-            if (Get-ADUser -Filter "sAMAccountName -eq '$($_.line)'") {
-                "Desktop User Account '$($_.Line)' Exists Already"}
-            else {
-            Write-Host "Creating Desktop User '$($_.Line)'"
-            New-ADUser `
-                -Server $DomainServer `
-                -Name $($_.line) `
-                -Path "$DesktopOU" `
-                -UserPrincipalName "$($_.line)$DomainUPN" `
-                -AccountPassword (convertto-securestring "%Ehy7QX#l@CWo$A*5IkO" -AsPlainText -Force) `
-                -Enabled $true `
-                -PasswordNeverExpires $true `
-                -AllowReversiblePasswordEncryption $true 
+# #Desktops
+#             $DesktopCSVLine | ForEach-Object{
+#             if (Get-ADUser -Filter "sAMAccountName -eq '$($_.line)'") {
+#                 "Desktop User Account '$($_.Line)' Exists Already"}
+#             else {
+#             Write-Host "Creating Desktop User '$($_.Line)'"
+#             New-ADUser `
+#                 -Server $DomainServer `
+#                 -Name $($_.line) `
+#                 -Path "$DesktopOU" `
+#                 -UserPrincipalName "$($_.line)$DomainUPN" `
+#                 -AccountPassword (convertto-securestring "%Ehy7QX#l@CWo$A*5IkO" -AsPlainText -Force) `
+#                 -Enabled $true `
+#                 -PasswordNeverExpires $true `
+#                 -AllowReversiblePasswordEncryption $true 
                            
-            Add-ADGroupMember `
-                -Server $DomainServer `
-                -identity "$DesktopGroup" `
-                -Members $($_.line)
+#             Add-ADGroupMember `
+#                 -Server $DomainServer `
+#                 -identity "$DesktopGroup" `
+#                 -Members $($_.line)
 
-            Get-ADUser `
-                -Server $DomainServer `
-                -identity $($_.line) | Set-ADUser `
-                -Server $DomainServer `
-                -Replace @{primarygroupid=$DesktopGroup.primarygrouptoken}
+#             Get-ADUser `
+#                 -Server $DomainServer `
+#                 -identity $($_.line) | Set-ADUser `
+#                 -Server $DomainServer `
+#                 -Replace @{primarygroupid=$DesktopGroup.primarygrouptoken}
 
-            Remove-ADGroupMember `
-                -Server $DomainServer `
-                -identity "Domain Users" `
-                -Members "$($_.line)" `
-                -confirm:$false
+#             Remove-ADGroupMember `
+#                 -Server $DomainServer `
+#                 -identity "Domain Users" `
+#                 -Members "$($_.line)" `
+#                 -confirm:$false
 
-            Set-ADAccountPassword `
-                -Server $DomainServer `
-                -Identity $($_.line) `
-                -NewPassword (ConvertTo-SecureString `
-                    -AsPlainText $($_.Line) `
-                    -Force) `
-                    -Reset `
-}}
-#Phones
-            $PhoneCSVLine | ForEach-Object{
-            if (Get-ADUser -Filter "sAMAccountName -eq '$($_.line)'") {
-                "Phone User Account '$($_.Line)' Exists Already"}
-            else {
-            Write-Host "Creating Phone User '$($_.Line)'"
-            New-ADUser `
-                -Server $DomainServer `
-                -Name $($_.line) `
-                -Path "$PhoneOU" `
-                -UserPrincipalName "$($_.line)$DomainUPN" `
-                -AccountPassword (convertto-securestring "%Ehy7QX#l@CWo$A*5IkO" -AsPlainText -Force) `
-                -Enabled $true `
-                -PasswordNeverExpires $true `
-                -AllowReversiblePasswordEncryption $true 
+#             Set-ADAccountPassword `
+#                 -Server $DomainServer `
+#                 -Identity $($_.line) `
+#                 -NewPassword (ConvertTo-SecureString `
+#                     -AsPlainText $($_.Line) `
+#                     -Force) `
+#                     -Reset `
+# }}
+# #Phones
+#             $PhoneCSVLine | ForEach-Object{
+#             if (Get-ADUser -Filter "sAMAccountName -eq '$($_.line)'") {
+#                 "Phone User Account '$($_.Line)' Exists Already"}
+#             else {
+#             Write-Host "Creating Phone User '$($_.Line)'"
+#             New-ADUser `
+#                 -Server $DomainServer `
+#                 -Name $($_.line) `
+#                 -Path "$PhoneOU" `
+#                 -UserPrincipalName "$($_.line)$DomainUPN" `
+#                 -AccountPassword (convertto-securestring "%Ehy7QX#l@CWo$A*5IkO" -AsPlainText -Force) `
+#                 -Enabled $true `
+#                 -PasswordNeverExpires $true `
+#                 -AllowReversiblePasswordEncryption $true 
                            
-            Add-ADGroupMember `
-                -Server $DomainServer `
-                -identity "$PhoneGroup" `
-                -Members $($_.line)
+#             Add-ADGroupMember `
+#                 -Server $DomainServer `
+#                 -identity "$PhoneGroup" `
+#                 -Members $($_.line)
 
-            Get-ADUser `
-                -Server $DomainServer `
-                -identity $($_.line) | Set-ADUser `
-                -Server $DomainServer `
-                -Replace @{primarygroupid=$PhoneGroup.primarygrouptoken}
+#             Get-ADUser `
+#                 -Server $DomainServer `
+#                 -identity $($_.line) | Set-ADUser `
+#                 -Server $DomainServer `
+#                 -Replace @{primarygroupid=$PhoneGroup.primarygrouptoken}
 
-            Remove-ADGroupMember `
-                -Server $DomainServer `
-                -identity "Domain Users" `
-                -Members "$($_.line)" `
-                -confirm:$false
+#             Remove-ADGroupMember `
+#                 -Server $DomainServer `
+#                 -identity "Domain Users" `
+#                 -Members "$($_.line)" `
+#                 -confirm:$false
 
-            Set-ADAccountPassword `
-                -Server $DomainServer `
-                -Identity $($_.line) `
-                -NewPassword (ConvertTo-SecureString `
-                    -AsPlainText $($_.Line) `
-                    -Force) `
-                    -Reset `
-}}
-#Printers
-            $PrinterCSVLine | ForEach-Object{
-            if (Get-ADUser -Filter "sAMAccountName -eq '$($_.line)'") {
-                "Printer User Account '$($_.Line)' Exists Already"}
-            else {
-            Write-Host "Creating Printer User '$($_.Line)'"
-            New-ADUser `
-                -Server $DomainServer `
-                -Name $($_.line) `
-                -Path "$PrinterOU" `
-                -UserPrincipalName "$($_.line)$DomainUPN" `
-                -AccountPassword (convertto-securestring "%Ehy7QX#l@CWo$A*5IkO" -AsPlainText -Force) `
-                -Enabled $true `
-                -PasswordNeverExpires $true `
-                -AllowReversiblePasswordEncryption $true 
+#             Set-ADAccountPassword `
+#                 -Server $DomainServer `
+#                 -Identity $($_.line) `
+#                 -NewPassword (ConvertTo-SecureString `
+#                     -AsPlainText $($_.Line) `
+#                     -Force) `
+#                     -Reset `
+# }}
+# #Printers
+#             $PrinterCSVLine | ForEach-Object{
+#             if (Get-ADUser -Filter "sAMAccountName -eq '$($_.line)'") {
+#                 "Printer User Account '$($_.Line)' Exists Already"}
+#             else {
+#             Write-Host "Creating Printer User '$($_.Line)'"
+#             New-ADUser `
+#                 -Server $DomainServer `
+#                 -Name $($_.line) `
+#                 -Path "$PrinterOU" `
+#                 -UserPrincipalName "$($_.line)$DomainUPN" `
+#                 -AccountPassword (convertto-securestring "%Ehy7QX#l@CWo$A*5IkO" -AsPlainText -Force) `
+#                 -Enabled $true `
+#                 -PasswordNeverExpires $true `
+#                 -AllowReversiblePasswordEncryption $true 
                            
-            Add-ADGroupMember `
-                -Server $DomainServer `
-                -identity "$PrinterGroup" `
-                -Members $($_.line)
+#             Add-ADGroupMember `
+#                 -Server $DomainServer `
+#                 -identity "$PrinterGroup" `
+#                 -Members $($_.line)
 
-            Get-ADUser `
-                -Server $DomainServer `
-                -identity $($_.line) | Set-ADUser `
-                -Server $DomainServer `
-                -Replace @{primarygroupid=$PrinterGroup.primarygrouptoken}
+#             Get-ADUser `
+#                 -Server $DomainServer `
+#                 -identity $($_.line) | Set-ADUser `
+#                 -Server $DomainServer `
+#                 -Replace @{primarygroupid=$PrinterGroup.primarygrouptoken}
 
-            Remove-ADGroupMember `
-                -Server $DomainServer `
-                -identity "Domain Users" `
-                -Members "$($_.line)" `
-                -confirm:$false
+#             Remove-ADGroupMember `
+#                 -Server $DomainServer `
+#                 -identity "Domain Users" `
+#                 -Members "$($_.line)" `
+#                 -confirm:$false
 
-            Set-ADAccountPassword `
-                -Server $DomainServer `
-                -Identity $($_.line) `
-                -NewPassword (ConvertTo-SecureString `
-                    -AsPlainText $($_.Line) `
-                    -Force) `
-                    -Reset `
-}}
-#Thin Clients
-            $ThinClientCSVLine | ForEach-Object{
-            if (Get-ADUser -Filter "sAMAccountName -eq '$($_.line)'") {
-                "Thin Client User Account '$($_.Line)' Exists Already"}
-            else {
-            Write-Host "Creating Thin Client User '$($_.Line)'"
-            New-ADUser `
-                -Server $DomainServer `
-                -Name $($_.line) `
-                -Path "$ThinClientOU" `
-                -UserPrincipalName "$($_.line)$DomainUPN" `
-                -AccountPassword (convertto-securestring "%Ehy7QX#l@CWo$A*5IkO" -AsPlainText -Force) `
-                -Enabled $true `
-                -PasswordNeverExpires $true `
-                -AllowReversiblePasswordEncryption $true 
+#             Set-ADAccountPassword `
+#                 -Server $DomainServer `
+#                 -Identity $($_.line) `
+#                 -NewPassword (ConvertTo-SecureString `
+#                     -AsPlainText $($_.Line) `
+#                     -Force) `
+#                     -Reset `
+# }}
+# #Thin Clients
+#             $ThinClientCSVLine | ForEach-Object{
+#             if (Get-ADUser -Filter "sAMAccountName -eq '$($_.line)'") {
+#                 "Thin Client User Account '$($_.Line)' Exists Already"}
+#             else {
+#             Write-Host "Creating Thin Client User '$($_.Line)'"
+#             New-ADUser `
+#                 -Server $DomainServer `
+#                 -Name $($_.line) `
+#                 -Path "$ThinClientOU" `
+#                 -UserPrincipalName "$($_.line)$DomainUPN" `
+#                 -AccountPassword (convertto-securestring "%Ehy7QX#l@CWo$A*5IkO" -AsPlainText -Force) `
+#                 -Enabled $true `
+#                 -PasswordNeverExpires $true `
+#                 -AllowReversiblePasswordEncryption $true 
                            
-            Add-ADGroupMember `
-                -Server $DomainServer `
-                -identity "$ThinClientGroup" `
-                -Members $($_.line)
+#             Add-ADGroupMember `
+#                 -Server $DomainServer `
+#                 -identity "$ThinClientGroup" `
+#                 -Members $($_.line)
 
-            Get-ADUser `
-                -Server $DomainServer `
-                -identity $($_.line) | Set-ADUser `
-                -Server $DomainServer `
-                -Replace @{primarygroupid=$ThinClientGroup.primarygrouptoken}
+#             Get-ADUser `
+#                 -Server $DomainServer `
+#                 -identity $($_.line) | Set-ADUser `
+#                 -Server $DomainServer `
+#                 -Replace @{primarygroupid=$ThinClientGroup.primarygrouptoken}
 
-            Remove-ADGroupMember `
-                -Server $DomainServer `
-                -identity "Domain Users" `
-                -Members "$($_.line)" `
-                -confirm:$false
+#             Remove-ADGroupMember `
+#                 -Server $DomainServer `
+#                 -identity "Domain Users" `
+#                 -Members "$($_.line)" `
+#                 -confirm:$false
 
-            Set-ADAccountPassword `
-                -Server $DomainServer `
-                -Identity $($_.line) `
-                -NewPassword (ConvertTo-SecureString `
-                    -AsPlainText $($_.Line) `
-                    -Force) `
-                    -Reset `
-}}
-#Misc Devices
-            $MiscCSVLine | ForEach-Object{
-            if (Get-ADUser -Filter "sAMAccountName -eq '$($_.line)'") {
-                "Misc User Account '$($_.Line)' Exists Already"}
-            else {
-            Write-Host "Creating Misc User '$($_.Line)'"
-            New-ADUser `
-                -Server $DomainServer `
-                -Name $($_.line) `
-                -Path "$MiscOU" `
-                -UserPrincipalName "$($_.line)$DomainUPN" `
-                -AccountPassword (convertto-securestring "%Ehy7QX#l@CWo$A*5IkO" -AsPlainText -Force) `
-                -Enabled $true `
-                -PasswordNeverExpires $true `
-                -AllowReversiblePasswordEncryption $true 
+#             Set-ADAccountPassword `
+#                 -Server $DomainServer `
+#                 -Identity $($_.line) `
+#                 -NewPassword (ConvertTo-SecureString `
+#                     -AsPlainText $($_.Line) `
+#                     -Force) `
+#                     -Reset `
+# }}
+# #Misc Devices
+#             $MiscCSVLine | ForEach-Object{
+#             if (Get-ADUser -Filter "sAMAccountName -eq '$($_.line)'") {
+#                 "Misc User Account '$($_.Line)' Exists Already"}
+#             else {
+#             Write-Host "Creating Misc User '$($_.Line)'"
+#             New-ADUser `
+#                 -Server $DomainServer `
+#                 -Name $($_.line) `
+#                 -Path "$MiscOU" `
+#                 -UserPrincipalName "$($_.line)$DomainUPN" `
+#                 -AccountPassword (convertto-securestring "%Ehy7QX#l@CWo$A*5IkO" -AsPlainText -Force) `
+#                 -Enabled $true `
+#                 -PasswordNeverExpires $true `
+#                 -AllowReversiblePasswordEncryption $true 
                            
-            Add-ADGroupMember `
-                -Server $DomainServer `
-                -identity "$MiscGroup" `
-                -Members $($_.line)
+#             Add-ADGroupMember `
+#                 -Server $DomainServer `
+#                 -identity "$MiscGroup" `
+#                 -Members $($_.line)
 
-            Get-ADUser `
-                -Server $DomainServer `
-                -identity $($_.line) | Set-ADUser `
-                -Server $DomainServer `
-                -Replace @{primarygroupid=$MiscGroup.primarygrouptoken}
+#             Get-ADUser `
+#                 -Server $DomainServer `
+#                 -identity $($_.line) | Set-ADUser `
+#                 -Server $DomainServer `
+#                 -Replace @{primarygroupid=$MiscGroup.primarygrouptoken}
 
-            Remove-ADGroupMember `
-                -Server $DomainServer `
-                -identity "Domain Users" `
-                -Members "$($_.line)" `
-                -confirm:$false
+#             Remove-ADGroupMember `
+#                 -Server $DomainServer `
+#                 -identity "Domain Users" `
+#                 -Members "$($_.line)" `
+#                 -confirm:$false
 
-            Set-ADAccountPassword `
-                -Server $DomainServer `
-                -Identity $($_.line) `
-                -NewPassword (ConvertTo-SecureString `
-                    -AsPlainText $($_.Line) `
-                    -Force) `
-                    -Reset `
-}}
+#             Set-ADAccountPassword `
+#                 -Server $DomainServer `
+#                 -Identity $($_.line) `
+#                 -NewPassword (ConvertTo-SecureString `
+#                     -AsPlainText $($_.Line) `
+#                     -Force) `
+#                     -Reset `
+# }}
 
 if ((Get-WindowsFeature | where name -eq AD-Certificate).installstate -eq "Installed") {
     write-host "AD CA Role Installed"}
