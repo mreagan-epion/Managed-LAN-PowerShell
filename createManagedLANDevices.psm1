@@ -43,9 +43,9 @@ function Import-ManagedLANDevices {
     #Used to specifiy a specific server for creating accounts. Without this, the script might hit more than one DC and that
     #will generate errors.
     $DomainServer = (Get-ADDomain).PDCEmulator
-    # $listIncrement = 0
-    $groupIncrement = 0
-    $pathIncrement = 0
+    
+    #Iterates through each list and creates the device accounts and sets all parameters/settings
+    $increment = 0
     foreach ($list in $allDeviceLists) {
         $list | ForEach-Object {
             if (Get-ADUser -Filter "sAMAccountName -eq '$($_.line)'") {
@@ -55,7 +55,7 @@ function Import-ManagedLANDevices {
             New-ADUser `
                 -Server $DomainServer `
                 -Name $($_.line) `
-                -Path $OUPathList[$pathIncrement] `
+                -Path $OUPathList[$increment] `
                 -UserPrincipalName "$($_.line)$DomainUPN" `
                 -AccountPassword (convertto-securestring "%Ehy7QX#l@CWo$A*5IkO" -AsPlainText -Force) `
                 -Enabled $true `
@@ -64,14 +64,14 @@ function Import-ManagedLANDevices {
                         
             Add-ADGroupMember `
                 -Server $DomainServer `
-                -identity $groups[$groupIncrement] `
+                -identity $groups[$increment] `
                 -Members $($_.line)
     
             Get-ADUser `
                 -Server $DomainServer `
                 -identity $($_.line) | Set-ADUser `
                 -Server $DomainServer `
-                -Replace @{primarygroupid=$groups[$groupIncrement].primarygrouptoken}
+                -Replace @{primarygroupid=$groups[$increment].primarygrouptoken}
     
             Remove-ADGroupMember `
                 -Server $DomainServer `
@@ -87,9 +87,7 @@ function Import-ManagedLANDevices {
                     -Force) `
                     -Reset `
             }
-        # $listIncrement++
         }
-        $groupIncrement++
-        $pathIncrement++
+        $increment++
     }
 }

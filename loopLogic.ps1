@@ -29,7 +29,7 @@
     # $PrinterGroup = Get-ADGroup "Managed LAN VLAN 1 - Secure" -Properties @("PrimaryGroupToken")
     # $ThinClientGroup = Get-ADGroup "Managed LAN VLAN 1 - Secure" -Properties @("PrimaryGroupToken")
     # $MiscGroup = Get-ADGroup "Managed LAN VLAN 20 - Internet Only" -Properties @("PrimaryGroupToken")
-    # $groups = @($DesktopGroup, $PhoneGroup, $PrinterGroup, $ThinClientGroup, $MiscGroup)
+    $groups = @("DesktopGroup", "PhoneGroup", "PrinterGroup", "ThinClientGroup", "MiscGroup")
 
     # #Variables for the device creation loop
     # $DomainName = (Get-WmiObject Win32_ComputerSystem).Domain
@@ -44,7 +44,8 @@
     $deviceIncrement = 0
         foreach ($list in $allDeviceLists) {
             $list | ForEach-Object {
-                    Write-Host $($_.line) " belongs in the " $OUPathList[$listIncrement] " path."}
+                    Write-Host $($_.line) " belongs in the " $OUPathList[$listIncrement] " path and is assigned to the " $groups[$groupIncrement] "."}
         $listIncrement++
+        $groupIncrement++
     }
 # }
