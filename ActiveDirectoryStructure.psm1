@@ -1,7 +1,7 @@
 
 $DEFAULTSUFFIXNAME = 'local'
 
-#Checking if the EpiOn and Managed LAN OU's exist
+#Checking if the EpiOn and Managed_LAN OU's exist
 function Get-ADStructure {
     param(
         [Parameter()]
@@ -13,23 +13,23 @@ function Get-ADStructure {
 
     #EpiOn OU
     if  ([adsi]::Exists("LDAP://OU=epion,DC=$domainPrefixName,DC=$domainSuffixName") -and 
-    #Managed LAN OU
-        ([adsi]::Exists("LDAP://OU=Managed LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName") -and
+    #Managed_LAN OU
+        ([adsi]::Exists("LDAP://OU=Managed_LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName") -and
 
     #Desktop OU
-        ([adsi]::Exists("LDAP://OU=Desktops,OU=Managed LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName") -and
+        ([adsi]::Exists("LDAP://OU=Desktops,OU=Managed_LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName") -and
 
     #Phone OU
-        ([adsi]::Exists("LDAP://OU=Phones,OU=Managed LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName") -and
+        ([adsi]::Exists("LDAP://OU=Phones,OU=Managed_LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName") -and
 
     #Printer OU
-        ([adsi]::Exists("LDAP://OU=Printers,OU=Managed LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName") -and
+        ([adsi]::Exists("LDAP://OU=Printers,OU=Managed_LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName") -and
 
     #Thin Client OU
-        ([adsi]::Exists("LDAP://OU=Thin Clients,OU=Managed LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName") -and
+        ([adsi]::Exists("LDAP://OU=Thin_Clients,OU=Managed_LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName") -and
 
     #Misc OU
-        ([adsi]::Exists("LDAP://OU=Misc,OU=Managed LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName")
+        ([adsi]::Exists("LDAP://OU=Misc,OU=Managed_LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName")
     ))))))) {
         return $true
     } else {
@@ -62,29 +62,29 @@ function Create-ADStructure {
             {Write-Host "Can't Create EpiOn OU. Typically this indicates incorrect Domain Suffix. " -ForegroundColor Red}
         }
     }
-    #Managed LAN OU
-    if ([adsi]::Exists("LDAP://OU=Managed LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName")) {
-        Write-Host 'Managed LAN OU Exists' -ForegroundColor Green
+    #Managed_LAN OU
+    if ([adsi]::Exists("LDAP://OU=Managed_LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName")) {
+        Write-Host 'Managed_LAN OU Exists' -ForegroundColor Green
     } else {
-        Write-Host 'Attempting to Create Managed LAN OU' -ForegroundColor Yellow
+        Write-Host 'Attempting to Create Managed_LAN OU' -ForegroundColor Yellow
         try {
-            New-ADOrganizationalUnit -Name 'Managed LAN' -Path "OU=EpiOn,DC=$domainPrefixName,DC=$domainSuffixName"
-            if ([adsi]::Exists("LDAP://OU=Managed LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName")) {
-                Write-Host "Successfully Created the Managed LAN OU" -ForegroundColor Green
+            New-ADOrganizationalUnit -Name 'Managed_LAN' -Path "OU=EpiOn,DC=$domainPrefixName,DC=$domainSuffixName"
+            if ([adsi]::Exists("LDAP://OU=Managed_LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName")) {
+                Write-Host "Successfully Created the Managed_LAN OU" -ForegroundColor Green
             } 
         }
         catch {
-            {Write-Host "Can't Create Managed LAN OU. Typically this indicates incorrect Domain Suffix. " -ForegroundColor Red}
+            {Write-Host "Can't Create Managed_LAN OU. Typically this indicates incorrect Domain Suffix. " -ForegroundColor Red}
         }
     }
     #Desktop OU
-    if ([adsi]::Exists("LDAP://OU=Desktops,OU=Managed LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName")) {
+    if ([adsi]::Exists("LDAP://OU=Desktops,OU=Managed_LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName")) {
         Write-Host 'Desktops OU Exists' -ForegroundColor Green
     } else {
         Write-Host 'Attempting to Create Desktops OU' -ForegroundColor Yellow
         try {
-            New-ADOrganizationalUnit -Name 'Desktops' -Path "OU=Managed LAN,OU=EpiOn,DC=$domainPrefixName,DC=$domainSuffixName"
-            if ([adsi]::Exists("LDAP://OU=Desktops,OU=Managed LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName")) {
+            New-ADOrganizationalUnit -Name 'Desktops' -Path "OU=Managed_LAN,OU=EpiOn,DC=$domainPrefixName,DC=$domainSuffixName"
+            if ([adsi]::Exists("LDAP://OU=Desktops,OU=Managed_LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName")) {
                 Write-Host "Successfully Created the Desktops OU" -ForegroundColor Green
             } 
         }
@@ -93,13 +93,13 @@ function Create-ADStructure {
         }
     }
     #Phone OU
-    if ([adsi]::Exists("LDAP://OU=Phones,OU=Managed LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName")) {
+    if ([adsi]::Exists("LDAP://OU=Phones,OU=Managed_LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName")) {
         Write-Host 'Phones OU Exists' -ForegroundColor Green
     } else {
         Write-Host 'Attempting to Create Phones OU' -ForegroundColor Yellow
         try {
-            New-ADOrganizationalUnit -Name 'Phones' -Path "OU=Managed LAN,OU=EpiOn,DC=$domainPrefixName,DC=$domainSuffixName"
-            if ([adsi]::Exists("LDAP://OU=Phones,OU=Managed LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName")) {
+            New-ADOrganizationalUnit -Name 'Phones' -Path "OU=Managed_LAN,OU=EpiOn,DC=$domainPrefixName,DC=$domainSuffixName"
+            if ([adsi]::Exists("LDAP://OU=Phones,OU=Managed_LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName")) {
                 Write-Host "Successfully Created the Phones OU" -ForegroundColor Green
             } 
         }
@@ -108,13 +108,13 @@ function Create-ADStructure {
         }
     }
     #Printer OU
-    if ([adsi]::Exists("LDAP://OU=Printers,OU=Managed LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName")) {
+    if ([adsi]::Exists("LDAP://OU=Printers,OU=Managed_LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName")) {
         Write-Host 'Printers OU Exists' -ForegroundColor Green
     } else {
         Write-Host 'Attempting to Create Printers OU' -ForegroundColor Yellow
         try {
-            New-ADOrganizationalUnit -Name 'Printers' -Path "OU=Managed LAN,OU=EpiOn,DC=$domainPrefixName,DC=$domainSuffixName"
-            if ([adsi]::Exists("LDAP://OU=Printers,OU=Managed LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName")) {
+            New-ADOrganizationalUnit -Name 'Printers' -Path "OU=Managed_LAN,OU=EpiOn,DC=$domainPrefixName,DC=$domainSuffixName"
+            if ([adsi]::Exists("LDAP://OU=Printers,OU=Managed_LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName")) {
                 Write-Host "Successfully Created the Printers OU" -ForegroundColor Green
             } 
         }
@@ -123,28 +123,28 @@ function Create-ADStructure {
         }
     }
     #Thin Client OU
-    if ([adsi]::Exists("LDAP://OU=Thin Clients,OU=Managed LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName")) {
-        Write-Host 'Thin Clients OU Exists' -ForegroundColor Green
+    if ([adsi]::Exists("LDAP://OU=Thin_Clients,OU=Managed_LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName")) {
+        Write-Host 'Thin_Clients OU Exists' -ForegroundColor Green
     } else {
-        Write-Host 'Attempting to Create Thin Clients OU' -ForegroundColor Yellow
+        Write-Host 'Attempting to Create Thin_Clients OU' -ForegroundColor Yellow
         try {
-            New-ADOrganizationalUnit -Name 'Thin Clients' -Path "OU=Managed LAN,OU=EpiOn,DC=$domainPrefixName,DC=$domainSuffixName"
-            if ([adsi]::Exists("LDAP://OU=Thin Clients,OU=Managed LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName")) {
-                Write-Host "Successfully Created the Thin Clients OU" -ForegroundColor Green
+            New-ADOrganizationalUnit -Name 'Thin_Clients' -Path "OU=Managed_LAN,OU=EpiOn,DC=$domainPrefixName,DC=$domainSuffixName"
+            if ([adsi]::Exists("LDAP://OU=Thin_Clients,OU=Managed_LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName")) {
+                Write-Host "Successfully Created the Thin_Clients OU" -ForegroundColor Green
             } 
         }
         catch {
-            {Write-Host "Can't Create Thin Clients OU. Typically this indicates incorrect Domain Suffix. " -ForegroundColor Red}
+            {Write-Host "Can't Create Thin_Clients OU. Typically this indicates incorrect Domain Suffix. " -ForegroundColor Red}
         }
     }
     #Misc OU
-    if ([adsi]::Exists("LDAP://OU=Misc,OU=Managed LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName")) {
+    if ([adsi]::Exists("LDAP://OU=Misc,OU=Managed_LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName")) {
         Write-Host 'Misc OU Exists' -ForegroundColor Green
     } else {
         Write-Host 'Attempting to Create Misc OU' -ForegroundColor Yellow
         try {
-            New-ADOrganizationalUnit -Name 'Misc' -Path "OU=Managed LAN,OU=EpiOn,DC=$domainPrefixName,DC=$domainSuffixName"
-            if ([adsi]::Exists("LDAP://OU=Misc,OU=Managed LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName")) {
+            New-ADOrganizationalUnit -Name 'Misc' -Path "OU=Managed_LAN,OU=EpiOn,DC=$domainPrefixName,DC=$domainSuffixName"
+            if ([adsi]::Exists("LDAP://OU=Misc,OU=Managed_LAN,OU=epion,DC=$domainPrefixName,DC=$domainSuffixName")) {
                 Write-Host "Successfully Created the Misc OU" -ForegroundColor Green
             } 
         }
@@ -154,7 +154,7 @@ function Create-ADStructure {
     }
 }
 
-#Used in the Managed LAN Groups Module to Obtain the OU Path
+#Used in the Managed_LAN Groups Module to Obtain the OU Path
 function Get-ADStructureName {
     param(
         [Parameter()]
