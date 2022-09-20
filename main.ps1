@@ -4,6 +4,7 @@ Import-Module .\ActiveDirectoryStructure.psm1
 Import-Module .\ManagedLANGroups.psm1
 Import-Module .\passwordPolicyOveride.psm1
 Import-Module .\createManagedLANDevices.psm1
+Import-Module .\serverRoles.psm1
 
 #Checks if AD OU Stucture is in place
 if (Get-ADStructure) {
@@ -28,3 +29,9 @@ if (Get-PasswordPolicy) {
 
 #Create Managed LAN Users
 Import-ManagedLANDevices
+
+if (Get-ManagedLANServerRoles) {
+    Write-Host "AD CA and NPS Roles Previously Installed" -ForegroundColor Green
+} else {
+    Install-ManagedLANServerRoles
+}
