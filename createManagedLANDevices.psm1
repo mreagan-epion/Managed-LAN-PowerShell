@@ -47,51 +47,49 @@ function Import-ManagedLANDevices {
     $groupIncrement = 0
     $pathIncrement = 0
     foreach ($list in $allDeviceLists) {
-        foreach ($list in $allDeviceLists) {
-            $list | ForEach-Object {
-                if (Get-ADUser -Filter "sAMAccountName -eq '$($_.line)'") {
-                    "Desktop User Account '$($_.line)' Already Exists"}
-                else {
-                Write-Host "Creating Desktop User '$($_.line)'"
-                New-ADUser `
-                    -Server $DomainServer `
-                    -Name $($_.line) `
-                    -Path $OUPathList[$pathIncrement] `
-                    -UserPrincipalName "$($_.line)$DomainUPN" `
-                    -AccountPassword (convertto-securestring "%Ehy7QX#l@CWo$A*5IkO" -AsPlainText -Force) `
-                    -Enabled $true `
-                    -PasswordNeverExpires $true `
-                    -AllowReversiblePasswordEncryption $true 
-                            
-                Add-ADGroupMember `
-                    -Server $DomainServer `
-                    -identity $groups[$groupIncrement] `
-                    -Members $($_.line)
-        
-                Get-ADUser `
-                    -Server $DomainServer `
-                    -identity $($_.line) | Set-ADUser `
-                    -Server $DomainServer `
-                    -Replace @{primarygroupid=$groups[$groupIncrement].primarygrouptoken}
-        
-                Remove-ADGroupMember `
-                    -Server $DomainServer `
-                    -identity "Domain Users" `
-                    -Members "$($_.line)" `
-                    -confirm:$false
-        
-                Set-ADAccountPassword `
-                    -Server $DomainServer `
-                    -Identity $($_.line) `
-                    -NewPassword (ConvertTo-SecureString `
-                        -AsPlainText $($_.line) `
-                        -Force) `
-                        -Reset `
-                }
-            # $listIncrement++
-            $groupIncrement++
+        $list | ForEach-Object {
+            if (Get-ADUser -Filter "sAMAccountName -eq '$($_.line)'") {
+                "Desktop User Account '$($_.line)' Already Exists"}
+            else {
+            Write-Host "Creating Desktop User '$($_.line)'"
+            New-ADUser `
+                -Server $DomainServer `
+                -Name $($_.line) `
+                -Path $OUPathList[$pathIncrement] `
+                -UserPrincipalName "$($_.line)$DomainUPN" `
+                -AccountPassword (convertto-securestring "%Ehy7QX#l@CWo$A*5IkO" -AsPlainText -Force) `
+                -Enabled $true `
+                -PasswordNeverExpires $true `
+                -AllowReversiblePasswordEncryption $true 
+                        
+            Add-ADGroupMember `
+                -Server $DomainServer `
+                -identity $groups[$groupIncrement] `
+                -Members $($_.line)
+    
+            Get-ADUser `
+                -Server $DomainServer `
+                -identity $($_.line) | Set-ADUser `
+                -Server $DomainServer `
+                -Replace @{primarygroupid=$groups[$groupIncrement].primarygrouptoken}
+    
+            Remove-ADGroupMember `
+                -Server $DomainServer `
+                -identity "Domain Users" `
+                -Members "$($_.line)" `
+                -confirm:$false
+    
+            Set-ADAccountPassword `
+                -Server $DomainServer `
+                -Identity $($_.line) `
+                -NewPassword (ConvertTo-SecureString `
+                    -AsPlainText $($_.line) `
+                    -Force) `
+                    -Reset `
             }
+        # $listIncrement++
         }
+        $groupIncrement++
         $pathIncrement++
     }
 }
