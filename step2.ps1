@@ -1522,8 +1522,8 @@
 # 	<SystemInfo ProcessorArchitecture="9" ProcessorLevel="6" ProcessorRevision="24067"/>
 # </Root>
 # '
-Import-NpsConfiguration -Path "$NPSTemplatePath"
-Write-Host "Standard NPS Policies have been created. You will need to add RADIUS Clients. Add Radius Clients now? y/n"
+# Import-NpsConfiguration -Path "$NPSTemplatePath"
+# Write-Host "Standard NPS Policies have been created. You will need to add RADIUS Clients. Add Radius Clients now? y/n"
 # $AddRadiusClientChoice=Read-Host
 # do {
 # if ($AddRadiusClientChoice -eq "n") {}
