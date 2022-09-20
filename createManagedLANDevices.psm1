@@ -2,7 +2,13 @@
 
 
 function Import-ManagedLANDevices {
-    param()
+    param(
+        [Parameter()]
+        [string] $domainSuffixName = $DEFAULTSUFFIXNAME
+    )
+
+    Import-Module ActiveDirectory
+    $domainPrefixName = (Get-ADDomain).name
 
     #Device CSV's
     $DesktopUserAccounts = Import-CSV "C:\temp\Desktop.csv"
@@ -36,7 +42,7 @@ function Import-ManagedLANDevices {
     #Used to specifiy a specific server for creating accounts. Without this, the script might hit more than one DC and that
     #will generate errors.
     $DomainServer = (Get-ADDomain).PDCEmulator
-    $listIncrement = 0
+    # $listIncrement = 0
     $groupIncrement = 0
     $pathIncrement = 0
     foreach ($list in $allDeviceLists) {
@@ -81,8 +87,9 @@ function Import-ManagedLANDevices {
                         -Force) `
                         -Reset `
                 }
-            $listIncrement++
+            # $listIncrement++
             $groupIncrement++
+            $pathIncrement++
             }
         }
     }
