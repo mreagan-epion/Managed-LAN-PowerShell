@@ -317,15 +317,15 @@
 #                     -Reset `
 # }}
 
-if ((Get-WindowsFeature | where name -eq AD-Certificate).installstate -eq "Installed") {
-    write-host "AD CA Role Installed"}
-    else {Add-WindowsFeature Adcs-Cert-Authority -IncludeManagementTools
-            Add-WindowsFeature Adcs-Cert-Authority -IncludeManagementTools
-            Install-AdcsCertificationAuthority -CAType StandaloneRootCa -Force}
-#Installing Network Policy Role and Starts IF statement to decide whether or not to create the MD5 Reg Keys
-if ((Get-WindowsFeature | where name -eq npas).installstate -eq "Available") {
-Write-Host "Installing NPAS Role" 
-Install-WindowsFeature -Name "NPAS" -IncludeManagementTools
+# if ((Get-WindowsFeature | where name -eq AD-Certificate).installstate -eq "Installed") {
+#     write-host "AD CA Role Installed"}
+#     else {Add-WindowsFeature Adcs-Cert-Authority -IncludeManagementTools
+#             Add-WindowsFeature Adcs-Cert-Authority -IncludeManagementTools
+#             Install-AdcsCertificationAuthority -CAType StandaloneRootCa -Force}
+# #Installing Network Policy Role and Starts IF statement to decide whether or not to create the MD5 Reg Keys
+# if ((Get-WindowsFeature | where name -eq npas).installstate -eq "Available") {
+# Write-Host "Installing NPAS Role" 
+# Install-WindowsFeature -Name "NPAS" -IncludeManagementTools
 #Creates MD5 Registry Keys
 if (Test-Path -Path "HKLM:\SYSTEM\CurrentControlSet\Services\RasMan\PPP\EAP\4") {Write-Host "Registry Key and Entries Exist"}
 else {
