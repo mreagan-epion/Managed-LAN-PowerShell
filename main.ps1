@@ -5,6 +5,7 @@ Import-Module .\ManagedLANGroups.psm1
 Import-Module .\passwordPolicyOveride.psm1
 Import-Module .\createManagedLANDevices.psm1
 Import-Module .\serverRoles.psm1
+Import-Module .\managedLANRegistryKeys.psm1
 
 #Checks if AD OU Stucture is in place
 if (Get-ADStructure) {
@@ -30,8 +31,16 @@ if (Get-PasswordPolicy) {
 #Create Managed LAN Users
 Import-ManagedLANDevices
 
+#Checks if the required Server Roles are installed. If not, it'll install it
 if (Get-ManagedLANServerRoles) {
     Write-Host "AD CA and NPS Roles Previously Installed" -ForegroundColor Green
 } else {
     Install-ManagedLANServerRoles
+}
+
+#Checks if NPS Registry Keys exist. If not, it'll create them
+if (Get-ManagedLANRegistryKeys) {
+    Write-Host "Registry Key and Entries Exist" -ForegroundColor Green
+} else {
+    Create-ManagedLANRegistryKeys
 }
