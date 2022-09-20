@@ -90,8 +90,8 @@ function Import-ManagedLANDevices {
                 }
             # $listIncrement++
             $groupIncrement++
-            $pathIncrement++
             }
         }
+        $pathIncrement++
     }
 }
