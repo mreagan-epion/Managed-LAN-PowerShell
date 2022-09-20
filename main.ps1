@@ -6,6 +6,7 @@ Import-Module .\passwordPolicyOveride.psm1
 Import-Module .\createManagedLANDevices.psm1
 Import-Module .\serverRoles.psm1
 Import-Module .\managedLANRegistryKeys.psm1
+Import-Module .\networkPolicyServer.psm1
 
 #Checks if AD OU Stucture is in place
 if (Get-ADStructure) {
@@ -44,3 +45,9 @@ if (Get-ManagedLANRegistryKeys) {
 } else {
     Create-ManagedLANRegistryKeys
 }
+
+#Imports NPS Standard Configuration. Given that NPS can very from server to server, this sometimes fails. 
+Import-NPSConfig
+
+#Prompts the user to create RADIUS Devices
+Create-RADIUSClients
