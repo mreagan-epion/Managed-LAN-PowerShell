@@ -64,12 +64,12 @@ function Export-Devices {
     # New-Item $ExportFilename `
     #     -ItemType "file" `
     #     -Value "Mac address`r`n"
-    New-Object psobject `
-        -Property @{'mac'="$mac"; 'hostname'=" $hostname"} | `
-    Export-CSV `
-        $exportFilename `
-        -append `
-        -NoTypeInformation
+    # New-Object psobject `
+    #     -Property @{'mac'="$mac"; 'hostname'=" $hostname"} | `
+    # Export-CSV `
+    #     $exportFilename `
+    #     -append `
+    #     -NoTypeInformation
 
 
     #Pulling list of sites on Unifi Controller and filtering by Client.
@@ -84,5 +84,5 @@ function Export-Devices {
     # ($finalresult.devices.data | where {$_.is_wired} | select mac | format-table -hidetableheaders | out-string).toupper().trim() | Out-File $ExportFilename -Append -Encoding ASCII -NoTypeInformation -Delimiter " "
 
     $finalresult = $returnedSites | select name,desc,@{n="devices";e={Invoke-RestMethod -Uri "$($connectionParametersReturn[2])/s/$($_.name)/stat/sta" -Method Post -Body "" -WebSession $session}}
-    ($finalresult.devices.data | where {$_.is_wired} | select mac, hostname | format-table -hidetableheaders | out-string).toupper().trim() | Export-Csv $ExportFilename -Append -Encoding ASCII -NoTypeInformation -Delimiter " "
+    ($finalresult.devices.data | where {$_.is_wired} | format-table -hidetableheaders) | Export-Csv -Path $exportFilename
 }
