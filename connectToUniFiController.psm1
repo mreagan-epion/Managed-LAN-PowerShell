@@ -72,6 +72,6 @@ function Export-Devices {
 
     #Pulling list of client device mac addresses and exporting to a CSV file
     $finalresult = $returnedSites | select name,desc,@{n="devices";e={Invoke-RestMethod -Uri "$($connectionParametersReturn[2])/s/$($_.name)/stat/sta" -Method Post -Body "" -WebSession $session}}
-    ($finalresult.devices.data | where {$_.is_wired} | select mac | format-table -hidetableheaders | out-string).toupper().trim() | Out-File $ExportFilename -Append -Encoding ASCII
+    ($finalresult.devices.data | where {$_.is_wired} | select mac, hostname | format-table -hidetableheaders | out-string).toupper().trim() | Out-File $ExportFilename -Append -Encoding ASCII
     
 }
