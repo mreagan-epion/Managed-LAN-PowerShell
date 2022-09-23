@@ -64,6 +64,7 @@ function Export-Devices {
     New-Item $ExportFilename `
         -ItemType "file" `
         -Value "Mac address`r`n"
+        -Value "Host Name`r`n"
 
 
     #Pulling list of sites on Unifi Controller and filtering by Client.
