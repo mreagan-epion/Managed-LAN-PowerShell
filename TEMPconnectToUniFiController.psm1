@@ -84,5 +84,5 @@ function Export-Devices {
     # ($finalresult.devices.data | where {$_.is_wired} | select mac | format-table -hidetableheaders | out-string).toupper().trim() | Out-File $ExportFilename -Append -Encoding ASCII -NoTypeInformation -Delimiter " "
 
     $finalresult = $returnedSites | select name,desc,@{n="devices";e={Invoke-RestMethod -Uri "$($connectionParametersReturn[2])/s/$($_.name)/stat/sta" -Method Post -Body "" -WebSession $session}}
-    ($finalresult.devices.data | where {$_.is_wired} | format-table -hidetableheaders) | Export-Csv -Path $exportFilename
+    ($finalresult.devices.data | where {$_.is_wired} | select mac, hostname, oui) | Export-Csv -Path $exportFilename -Encoding ASCII -NoTypeInformation
 }
