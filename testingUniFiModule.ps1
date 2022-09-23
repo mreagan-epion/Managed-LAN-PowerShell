@@ -9,7 +9,7 @@ function test {
     param (
         # OptionalParameters
     )
-    $var = @"Hello World"
+    $var = @("Hello World", "Holo World?")
 
     return $var
 }
@@ -20,8 +20,10 @@ function test2 {
     )
     $var2 = test
 
-    Write-Host $var2
+    # Write-Host $var2
+    return $var2
     
 }
 
-test2
+$test3 = test2
+Write-Host "This is the value of the second value: $($test3[1])"
