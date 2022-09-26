@@ -32,7 +32,7 @@ function ConnectTo-UniFiController {
     #Credentials to log into the Unifi Controller
     $cred = "`{`"username`":`"$username`",`"password`":`"$password`"`}"
 
-    $connectionParameters = @($cred, $loginURI, $baseURI)
+    $connectionParameters = @($cred, $loginURI, $baseURI, $client)
     return $connectionParameters
 }
 
@@ -64,13 +64,14 @@ function Export-Devices {
 
     #Pulling list of sites on Unifi Controller and filtering by Client.
     $response = Invoke-RestMethod -Uri "$($connectionParametersReturn[2])/self/sites" -Method Get  -WebSession $session
-    $returnedSites = $response.data | select name,desc | where desc -like "*$Client*" | sort-object desc
+    $returnedSites = $response.data | select name,desc | where desc -like "*$($connectionParametersReturn[3])*" | sort-object desc
+    write-host $returnedSites
 
     $finalresult = $returnedSites | select name,desc,@{n="devices";e={Invoke-RestMethod -Uri "$($connectionParametersReturn[2])/s/$($_.name)/stat/sta" -Method Post -Body "" -WebSession $session}}
     ($finalresult.devices.data | where {$_.is_wired} | select mac, hostname, oui) | Export-Csv -Path $exportFilename -Encoding ASCII -NoTypeInformation
 
     #Importing Un-Cleaned Data File
-    $rawCSV = Import-Csv -Path "C:\Temp\MACExport.csv"
+    $rawCSV = Import-Csv -Path $exportFilename
     #Placeholder for cleaned data
     $almostProccessedCSV = @()
     $proccessedCSV = @()
