@@ -54,35 +54,33 @@ function Export-Devices {
         -SessionVariable session `
         | out-null
 
-
-
     $exportFilename = "C:\Temp\MACExport.csv"
     if (Test-Path $exportFilename) {
         Remove-Item $exportFilename
     }
-    
-    # New-Item $ExportFilename `
-    #     -ItemType "file" `
-    #     -Value "Mac address`r`n"
-    # New-Object psobject `
-    #     -Property @{'mac'="$mac"; 'hostname'=" $hostname"} | `
-    # Export-CSV `
-    #     $exportFilename `
-    #     -append `
-    #     -NoTypeInformation
-
 
     #Pulling list of sites on Unifi Controller and filtering by Client.
     $response = Invoke-RestMethod -Uri "$($connectionParametersReturn[2])/self/sites" -Method Get  -WebSession $session
     $returnedSites = $response.data | select name,desc | where desc -like "*$Client*" | sort-object desc
 
-    #Pulling list of client device mac addresses and exporting to a CSV file
-    # $finalresult = $returnedSites | select name,desc,@{n="devices";e={Invoke-RestMethod -Uri "$($connectionParametersReturn[2])/s/$($_.name)/stat/sta" -Method Post -Body "" -WebSession $session}}
-    # ($finalresult.devices.data | where {$_.is_wired} | select mac, hostname | format-table -hidetableheaders | out-string).toupper().trim() | Out-File $ExportFilename -Append -Encoding ASCII
-    
-    # $finalresult = $returnedSites | select name,desc,@{n="devices";e={Invoke-RestMethod -Uri "$($connectionParametersReturn[2])/s/$($_.name)/stat/sta" -Method Post -Body "" -WebSession $session}}
-    # ($finalresult.devices.data | where {$_.is_wired} | select mac | format-table -hidetableheaders | out-string).toupper().trim() | Out-File $ExportFilename -Append -Encoding ASCII -NoTypeInformation -Delimiter " "
-
     $finalresult = $returnedSites | select name,desc,@{n="devices";e={Invoke-RestMethod -Uri "$($connectionParametersReturn[2])/s/$($_.name)/stat/sta" -Method Post -Body "" -WebSession $session}}
-    ($finalresult.devices.data | where {$_.is_wired} | format-table -hidetableheaders) | Export-Csv -Path $exportFilename
+    ($finalresult.devices.data | where {$_.is_wired} | select mac, hostname, oui) | Export-Csv -Path $exportFilename -Encoding ASCII -NoTypeInformation
+
+    #Importing Un-Cleaned Data File
+    $rawCSV = Import-Csv -Path "C:\Temp\MACExport.csv"
+    #Placeholder for cleaned data
+    $proccessedCSV = @()
+    #Proccessing Raw Data
+    $rawCSV | ForEach-Object {
+        $proccessedCSV += [PSCustomObject]@{
+            mac = $_.mac.toupper().trim()
+            hostname = $_.hostname
+            oui = $_.oui
+        }
+    }
+    #Removing the old file and replacing it with the new one
+    if (Test-Path $exportFilename) {
+        Remove-Item $exportFilename
+    }
+    $proccessedCSV | Export-Csv -Path $exportFilename -NoTypeInformation -Encoding ASCII
 }
