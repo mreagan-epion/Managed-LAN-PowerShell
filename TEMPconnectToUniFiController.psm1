@@ -68,4 +68,32 @@ function Export-Devices {
 
     $finalresult = $returnedSites | select name,desc,@{n="devices";e={Invoke-RestMethod -Uri "$($connectionParametersReturn[2])/s/$($_.name)/stat/sta" -Method Post -Body "" -WebSession $session}}
     ($finalresult.devices.data | where {$_.is_wired} | select mac, hostname, oui) | Export-Csv -Path $exportFilename -Encoding ASCII -NoTypeInformation
+
+    #Importing Un-Cleaned Data File
+    $rawCSV = Import-Csv -Path "C:\Temp\MACExport.csv"
+    #Placeholder for cleaned data
+    $almostProccessedCSV = @()
+    $proccessedCSV = @()
+    #Proccessing Raw Data
+    #Step 1 is to upper case all letters in MAC Address
+    $rawCSV | ForEach-Object {
+        $almostProccessedCSV += [PSCustomObject]@{
+            mac = $_.mac.toupper().trim()
+            hostname = $_.hostname
+            oui = $_.oui
+        }
+    }
+    #Step 2 is removing colons
+    $almostProccessedCSV | ForEach-Object {
+        $proccessedCSV += [PSCustomObject]@{
+            mac = $_.mac -replace(":", "")
+            hostname = $_.hostname
+            oui = $_.oui
+        }
+    }
+    #Removing the old file and replacing it with the new one
+    if (Test-Path $exportFilename) {
+        Remove-Item $exportFilename
+    }
+    $proccessedCSV | Export-Csv -Path $exportFilename -NoTypeInformation -Encoding ASCII
 }
