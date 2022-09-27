@@ -10,6 +10,7 @@ function Import-ManagedLANDevices {
 
     Import-Module ActiveDirectory
     Import-Module .\Modules\createManagedLANDevicesTest.psm1
+    Import-Module .\Modules\deviceDetermination.psm1
     $domainPrefixName = (Get-ADDomain).name
 
     #Device CSV
