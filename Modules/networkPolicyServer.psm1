@@ -4,7 +4,7 @@
 function Import-NPSConfig {
     param (
         [Parameter()]
-        [string] $configPath = ".\NPSConfigimport.xml"
+        [string] $configPath = "..\NPSConfigimport.xml"
     )
     
     Import-NpsConfiguration -Path "$configPath"
