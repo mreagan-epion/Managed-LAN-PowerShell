@@ -1,7 +1,7 @@
 
 
-Import-Module .\Modules\ActiveDirectoryStructure.psm1
-Import-Module .\Modules\ManagedLANGroups.psm1
+Import-Module .\Modules\activeDirectoryStructure.psm1
+Import-Module .\Modules\managedLANGroups.psm1
 Import-Module .\Modules\passwordPolicyOveride.psm1
 Import-Module .\Modules\createManagedLANDevices.psm1
 Import-Module .\Modules\serverRoles.psm1

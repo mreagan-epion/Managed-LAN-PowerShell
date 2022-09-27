@@ -30,7 +30,7 @@ function Create-ManagedLANGroups {
     param()
 
     Import-Module ActiveDirectory
-    Import-Module .\ActiveDirectoryStructure.psm1
+    Import-Module .\Modules\activeDirectoryStructure.psm1
 
     #Group Names
     $ManagedLANSecure="Managed_LAN_VLAN_1_Secure"
