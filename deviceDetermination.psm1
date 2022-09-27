@@ -15,7 +15,10 @@ function Get-DeviceType {
     
 
     switch ($macAddress) {
-        {$commonDesktopBrands -contains $_} {Write-Host "True"}
-        default {Write-Host "False"}
+        {$commonDesktopBrands -contains $_} {return "Desktop"; break;}
+        {$commonPhoneBrands -contains $_} {return "Phone"; break;}
+        {$commonPrinterBrands -contains $_} {return "Printer"; break;}
+        {$commonThinClientBrands -contains $_} {return "ThinClient"; break;}
+        default {return "Misc";}
     }
 }
