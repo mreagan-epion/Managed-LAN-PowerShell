@@ -60,7 +60,7 @@ function Import-ManagedLANDevices {
         else {
         Write-Host "Creating User '$($_.mac)' '$($_.hostname)'"
         #Determining the display name of the account for quick ID
-        if ($($_.hostname) -is "") {
+        if ($($_.hostname) -is $null) {
             Set-Variable $name -Value "$($_.mac) $($_.oui)"
         } else {
             Set-Variable $name -Value $($_.hostname)
