@@ -41,7 +41,9 @@ function Import-ManagedLANDevices {
     #will generate errors.
     $DomainServer = (Get-ADDomain).PDCEmulator
     
-    #Iterates through each list and creates the device accounts and sets all parameters/settings
+    #Temp name for loop below
+    New-Variable -Name "name"
+
     #Increment serves two points of reference; OU Path and Groups
     $increment = 0
     $deviceList | ForEach-Object {
