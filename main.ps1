@@ -1,12 +1,12 @@
 
 
-Import-Module .\ActiveDirectoryStructure.psm1
-Import-Module .\ManagedLANGroups.psm1
-Import-Module .\passwordPolicyOveride.psm1
-Import-Module .\createManagedLANDevices.psm1
-Import-Module .\serverRoles.psm1
-Import-Module .\managedLANRegistryKeys.psm1
-Import-Module .\networkPolicyServer.psm1
+Import-Module .\Modules\ActiveDirectoryStructure.psm1
+Import-Module .\Modules\ManagedLANGroups.psm1
+Import-Module .\Modules\passwordPolicyOveride.psm1
+Import-Module .\Modules\createManagedLANDevices.psm1
+Import-Module .\Modules\serverRoles.psm1
+Import-Module .\Modules\managedLANRegistryKeys.psm1
+Import-Module .\Modules\networkPolicyServer.psm1
 
 #Checks if AD OU Stucture is in place
 if (Get-ADStructure) {
