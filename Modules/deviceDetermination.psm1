@@ -11,7 +11,6 @@ function Get-DeviceType {
     $commonPhoneBrands = @("Esi", "Zultys", "XiamenYe", "Xiamen Yealink Network Technology Co.,Ltd", "Sensapho", "")
     $commonPrinterBrands = @("KYOCERA Display Corporation", "HewlettP", "Hewlett Packard", "Lexmark International, Inc.", "KonicaMi", "Brother Industries, LTD.")
     $commonThinClientBrands = @("Raspberry Pi Foundation", "Raspberry Pi Trading Ltd")
-    $placements = @($commonDesktopBrands, $commonPhoneBrands, $commonPrinterBrands, $commonThinClientBrands)
     
 
     switch ($macAddress) {
