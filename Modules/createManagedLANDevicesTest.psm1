@@ -62,10 +62,10 @@ function Import-ManagedLANDevices {
         else {
         Write-Host "Creating User '$($_.mac)' '$($_.hostname)'"
         #Determining the display name of the account for quick ID
-        if ($($_.hostname)) {
-            Set-Variable $name -Value "$($_.mac) $($_.oui)"
+        if (!($($_.hostname))) {
+            $name = "$($_.mac) $($_.oui)"
         } else {
-            Set-Variable $name -Value $($_.hostname)
+            $name = $($_.hostname)
         }
         New-ADUser `
             -Server $DomainServer `
@@ -80,23 +80,23 @@ function Import-ManagedLANDevices {
         Add-ADGroupMember `
             -Server $DomainServer `
             -identity $groups[$increment] `
-            -Members $($_.mac)
+            -Members $name
 
         Get-ADUser `
             -Server $DomainServer `
-            -identity $($_.mac) | Set-ADUser `
+            -identity $name | Set-ADUser `
             -Server $DomainServer `
             -Replace @{primarygroupid=$groups[$increment].primarygrouptoken}
 
         Remove-ADGroupMember `
             -Server $DomainServer `
             -identity "Domain Users" `
-            -Members "$($_.mac)" `
+            -Members "$name" `
             -confirm:$false
 
         Set-ADAccountPassword `
             -Server $DomainServer `
-            -Identity $($_.mac) `
+            -Identity $name `
             -NewPassword (ConvertTo-SecureString `
                 -AsPlainText $($_.mac) `
                 -Force) `
