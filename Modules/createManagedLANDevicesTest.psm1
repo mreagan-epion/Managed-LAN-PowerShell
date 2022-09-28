@@ -61,47 +61,47 @@ function Import-ManagedLANDevices {
         if (Get-ADUser -Filter "sAMAccountName -eq '$($_.mac)'") {
             "User Account '$($_.mac)' '$($_.hostname)' Already Exists"}
         else {
-        Write-Host "Creating User '$($_.mac)' '$($_.hostname)'"
-        #Determining the display name of the account for quick ID
-        if (!($($_.hostname))) {
-            $name = "$($_.mac) $($_.oui)"
-        } else {
-            $name = $($_.hostname)
-        }
-        New-ADUser `
-            -Server $DomainServer `
-            -Name $name `
-            -Path $OUPathList[$increment] `
-            -UserPrincipalName "$($_.mac)$DomainUPN" `
-            -AccountPassword (convertto-securestring "%Ehy7QX#l@CWo$A*5IkO" -AsPlainText -Force) `
-            -Enabled $true `
-            -PasswordNeverExpires $true `
-            -AllowReversiblePasswordEncryption $true 
-                    
-        Add-ADGroupMember `
-            -Server $DomainServer `
-            -identity $groups[$increment] `
-            -Members $name
+            Write-Host "Creating User '$($_.mac)' '$($_.hostname)'"
+            #Determining the display name of the account for quick ID
+            if (!($($_.hostname))) {
+                $name = "$($_.mac) $($_.oui)"
+            } else {
+                $name = $($_.hostname)
+            }
+            New-ADUser `
+                -Server $DomainServer `
+                -Name $name `
+                -Path $OUPathList[$increment] `
+                -UserPrincipalName "$($_.mac)$DomainUPN" `
+                -AccountPassword (convertto-securestring "%Ehy7QX#l@CWo$A*5IkO" -AsPlainText -Force) `
+                -Enabled $true `
+                -PasswordNeverExpires $true `
+                -AllowReversiblePasswordEncryption $true 
+                        
+            Add-ADGroupMember `
+                -Server $DomainServer `
+                -identity $groups[$increment] `
+                -Members $name
 
-        Get-ADUser `
-            -Server $DomainServer `
-            -identity $name | Set-ADUser `
-            -Server $DomainServer `
-            -Replace @{primarygroupid=$groups[$increment].primarygrouptoken}
+            Get-ADUser `
+                -Server $DomainServer `
+                -identity $name | Set-ADUser `
+                -Server $DomainServer `
+                -Replace @{primarygroupid=$groups[$increment].primarygrouptoken}
 
-        Remove-ADGroupMember `
-            -Server $DomainServer `
-            -identity "Domain Users" `
-            -Members "$name" `
-            -confirm:$false
+            Remove-ADGroupMember `
+                -Server $DomainServer `
+                -identity "Domain Users" `
+                -Members "$name" `
+                -confirm:$false
 
-        Set-ADAccountPassword `
-            -Server $DomainServer `
-            -Identity $name `
-            -NewPassword (ConvertTo-SecureString `
-                -AsPlainText $($_.mac) `
-                -Force) `
-                -Reset `
+            Set-ADAccountPassword `
+                -Server $DomainServer `
+                -Identity $name `
+                -NewPassword (ConvertTo-SecureString `
+                    -AsPlainText $($_.mac) `
+                    -Force) `
+                    -Reset `
         }
     }
 }
