@@ -69,26 +69,15 @@ function Export-Devices {
     #Importing Un-Cleaned Data File
     $rawCSV = Import-Csv -Path $exportFilename
     #Placeholder for cleaned data
-    $almostProccessedCSV = @()
     $proccessedCSV = @()
     #Proccessing Raw Data
-    #Step 1 is to upper case all letters in MAC Address
     $rawCSV | ForEach-Object {
-        $almostProccessedCSV += [PSCustomObject]@{
-            mac = $_.mac.toupper().trim()
-            hostname = $_.hostname
-            oui = $_.oui
-        }
-    }
-    #Step 2 is removing colons
-    $almostProccessedCSV | ForEach-Object {
         $proccessedCSV += [PSCustomObject]@{
-            mac = $_.mac -replace(":", "")
+            mac = $_.mac.toupper().trim() -replace(":", "")
             hostname = $_.hostname
-            oui = $_.oui
+            oui = $_.oui.replace(" ", "").replace(",", "").replace(".", "")
         }
     }
-    #Removing the old file and replacing it with the new one
     if (Test-Path $exportFilename) {
         Remove-Item $exportFilename
     }
