@@ -58,7 +58,7 @@ function Import-ManagedLANDevices {
             Default {Set-Variable $increment -Value 4; break;}
         }
         #Checks if account exists
-        if ((Get-ADUser -Filter "sAMAccountName -eq '$($_.mac)'") -or (Get-ADUser -Filter "Name -eq '$($_.hostname)'")) {
+        if (Get-ADUser -Filter "sAMAccountName -eq '$($_.mac)'") {
             "User Account '$($_.mac)' '$($_.hostname)' Already Exists"
         }
         else {
