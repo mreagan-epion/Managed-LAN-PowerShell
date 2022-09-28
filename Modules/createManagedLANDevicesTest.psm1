@@ -51,11 +51,11 @@ function Import-ManagedLANDevices {
         #Gets device type
         $deviceGroup = Get-DeviceType -macAddress "$($_.mac)"
         switch ($deviceGroup) {
-            {$_ -eq "Desktop"} {Set-Variable $increment -Value 0}
-            {$_ -eq "Phone"} {Set-Variable $increment -Value 1}
-            {$_ -eq "Printer"} {Set-Variable $increment -Value 2}
-            {$_ -eq "ThinClient"} {Set-Variable $increment -Value 3}
-            Default {Set-Variable $increment -Value 4}
+            {$_ -eq "Desktop"} {Set-Variable $increment -Value 0; break;}
+            {$_ -eq "Phone"} {Set-Variable $increment -Value 1; break;}
+            {$_ -eq "Printer"} {Set-Variable $increment -Value 2; break;}
+            {$_ -eq "ThinClient"} {Set-Variable $increment -Value 3; break;}
+            Default {Set-Variable $increment -Value 4; break;}
         }
         #Checks if account exists
         if (Get-ADUser -Filter "sAMAccountName -eq '$($_.mac)'") {
@@ -64,7 +64,7 @@ function Import-ManagedLANDevices {
             Write-Host "Creating User '$($_.mac)' '$($_.hostname)'"
             #Determining the display name of the account for quick ID
             if (!($($_.hostname))) {
-                $name = "$($_.mac) $($_.oui)"
+                $name = "$($_.mac)"
             } else {
                 $name = $($_.hostname)
             }
