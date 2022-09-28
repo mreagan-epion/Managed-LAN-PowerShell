@@ -77,7 +77,7 @@ function Export-Devices {
         $proccessedCSV += [PSCustomObject]@{
             mac = $_.mac.toupper().trim() -replace(":", "")
             hostname = $_.hostname
-            oui = $_.oui -replace(" ", "") -replace(",", "") -replace(".", "")
+            oui = $_.oui.replace(" ", "").replace(",", "").replace(".", "")
         }
     }
     #Step 2 is removing colons
