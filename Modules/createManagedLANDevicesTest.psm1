@@ -69,6 +69,11 @@ function Import-ManagedLANDevices {
             } else {
                 $name = $($_.hostname)
             }
+            #Making sure the $name is less than 20 characters
+            $nameCheck = $name | Measure-Object -Character
+            if ($nameCheck.Characters -gt 20) {
+                $name = $name.subString(0, [System.Math]::Min(20, $name.Length))
+            }
             New-ADUser `
                 -Server $DomainServer `
                 -Name $name `
@@ -77,7 +82,8 @@ function Import-ManagedLANDevices {
                 -AccountPassword (convertto-securestring "%Ehy7QX#l@CWo$A*5IkO" -AsPlainText -Force) `
                 -Enabled $true `
                 -PasswordNeverExpires $true `
-                -AllowReversiblePasswordEncryption $true 
+                -AllowReversiblePasswordEncryption $true `
+                -Description "This device was automatically created by the EpiOn Managed LAN Script. It was originally placed in the $deviceGroup OU."
                         
             Add-ADGroupMember `
                 -Server $DomainServer `
