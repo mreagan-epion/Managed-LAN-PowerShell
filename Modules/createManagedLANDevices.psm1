@@ -48,7 +48,7 @@ function Import-ManagedLANDevices {
     $deviceList | ForEach-Object {
         #Gets device type. Checks if $hostname exists or not. If not, it's set to Misc. 
         $deviceGroup = Get-DeviceType -macAddress "$($_.oui)" -ErrorAction SilentlyContinue
-        switch ($deviceGroup) {
+        switch ($deviceGroup[0]) {
             {$_ -eq "Desktop"} {$increment = 0; break;}
             {$_ -eq "Phone"} {$increment = 1; break;}
             {$_ -eq "Printer"} {$increment = 2; break;}
@@ -56,7 +56,7 @@ function Import-ManagedLANDevices {
             Default {$increment = 4; break;}
         }
         if (!$($_.oui)) {
-            $groupIncrement = Read-Host "Vendor information is missing. The Device Name is $($_.hostname) and the Mac Address is $($_.mac). Enter 0 to put it in the Secure VLAN and 1 to put it into the Internet Only VLAN."
+            $deviceGroup[1] = Read-Host "Vendor information is missing. The Device Name is $($_.hostname) and the Mac Address is $($_.mac). Enter 0 to put it in the Secure VLAN and 1 to put it into the Internet Only VLAN."
         }
         #Checks if account exists
         if (Get-ADUser -Filter "sAMAccountName -eq '$($_.mac)'") {
@@ -84,19 +84,18 @@ function Import-ManagedLANDevices {
                 -Enabled $true `
                 -PasswordNeverExpires $true `
                 -AllowReversiblePasswordEncryption $true `
-                -Description "$groups[$groupIncrement] $($_.oui)"
-                # -Description "This device was automatically created by the EpiOn Managed LAN Script. It was originally placed in the $deviceGroup OU. If present, the vendor ID is $($_.oui)"
+                -Description "This device was automatically created by the EpiOn Managed LAN Script. It was originally placed in the $deviceGroup OU. If present, the vendor ID is $($_.oui)"
                         
             Add-ADGroupMember `
                 -Server $DomainServer `
-                -identity $groups[$groupIncrement] `
+                -identity $groups[$deviceGroup[1]] `
                 -Members $name
 
             Get-ADUser `
                 -Server $DomainServer `
                 -identity $name | Set-ADUser `
                 -Server $DomainServer `
-                -Replace @{primarygroupid=$groups[$groupIncrement].primarygrouptoken}
+                -Replace @{primarygroupid=$groups[$deviceGroup[1]].primarygrouptoken}
 
             Remove-ADGroupMember `
                 -Server $DomainServer `

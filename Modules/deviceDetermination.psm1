@@ -12,12 +12,14 @@ function Get-DeviceType {
     $commonPrinterBrands = @("KYOCERADisplayCorporation", "HewlettP", "HewlettPackard", "LexmarkInternationalInc", "KonicaMi", "BrotherIndustriesLTD", "Ricoh", "ZebraTechnologiesCorpa", "CanonInc", "ZebraTec", "NortelNetworks")
     $commonThinClientBrands = @("RaspberryPiFoundation", "RaspberryPiTradingLtd")
     
+    $vlan1 = 0
+    $vlan20 = 1
 
     switch ($macAddress) {
-        {$commonDesktopBrands -contains $_} {return "Desktop"; break;}
-        {$commonPhoneBrands -contains $_} {return "Phone"; break;}
-        {$commonPrinterBrands -contains $_} {return "Printer"; break;}
-        {$commonThinClientBrands -contains $_} {return "ThinClient"; break;}
-        default {return "Misc";}
+        {$commonDesktopBrands -contains $_} {return @("Desktop", $vlan1); break;}
+        {$commonPhoneBrands -contains $_} {return @("Phone", $vlan20); break;}
+        {$commonPrinterBrands -contains $_} {return @("Printer", $vlan1); break;}
+        {$commonThinClientBrands -contains $_} {return @("ThinClient", $vlan1); break;}
+        default {return @("Misc", $vlan20);}
     }
 }
