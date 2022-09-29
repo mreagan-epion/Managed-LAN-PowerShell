@@ -3,7 +3,7 @@
 
 function Get-DeviceType {
     param (
-        [Parameter(Mandatory)]
+        [Parameter()]
         [string] $macAddress
     )
 
