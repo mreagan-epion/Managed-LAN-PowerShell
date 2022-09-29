@@ -49,6 +49,12 @@ function Import-ManagedLANDevices {
     $increment = 0
     $deviceList | ForEach-Object {
         #Gets device type
+        try {
+            $deviceGroup = Get-DeviceType -macAddress "$($_.oui)"    
+        }
+        catch {
+            $deviceGroup = "Misc"
+        }
         $deviceGroup = Get-DeviceType -macAddress "$($_.oui)"
         switch ($deviceGroup) {
             {$_ -eq "Desktop"} {$increment = 0; break;}
