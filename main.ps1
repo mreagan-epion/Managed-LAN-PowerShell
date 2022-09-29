@@ -3,7 +3,7 @@
 Import-Module .\Modules\activeDirectoryStructure.psm1
 Import-Module .\Modules\managedLANGroups.psm1
 Import-Module .\Modules\passwordPolicyOveride.psm1
-Import-Module .\Modules\createManagedLANDevices.psm1
+Import-Module .\Modules\createManagedLANDevicesTest.psm1
 Import-Module .\Modules\serverRoles.psm1
 Import-Module .\Modules\managedLANRegistryKeys.psm1
 Import-Module .\Modules\networkPolicyServer.psm1
