@@ -68,7 +68,9 @@ function Import-ManagedLANDevices {
             if (!($($_.hostname))) {
                 $name = "$($_.mac)-$($_.oui)"
             } else {
-                $name = $($_.hostname)
+                #Creating unique user IDs
+                $lastFour = $($_.mac).subString(12 -4)
+                $name = "$($_.hostname)$lastFour"
             }
             #Making sure the $name is less than 20 characters
             $nameCheck = $name | Measure-Object -Character
