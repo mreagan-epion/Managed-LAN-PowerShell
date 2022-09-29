@@ -50,10 +50,10 @@ function Import-ManagedLANDevices {
     $deviceList | ForEach-Object {
         #Gets device type. Checks if $hostname exists or not. If not, it's set to Misc. 
         if (($($_.hostname))) {
-            $deviceGroup = "Misc"  
+            $deviceGroup = Get-DeviceType -macAddress "$($_.oui)"
         }
         else {
-            $deviceGroup = Get-DeviceType -macAddress "$($_.oui)"
+            $deviceGroup = "Misc"
         }
         switch ($deviceGroup) {
             {$_ -eq "Desktop"} {$increment = 0; break;}
