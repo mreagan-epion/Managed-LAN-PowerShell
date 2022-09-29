@@ -84,7 +84,8 @@ function Import-ManagedLANDevices {
                 -Enabled $true `
                 -PasswordNeverExpires $true `
                 -AllowReversiblePasswordEncryption $true `
-                -Description "This device was automatically created by the EpiOn Managed LAN Script. It was originally placed in the $deviceGroup OU. If present, the vendor ID is $($_.oui)"
+                -Description "$groups[$groupIncrement] $($_.oui)"
+                # -Description "This device was automatically created by the EpiOn Managed LAN Script. It was originally placed in the $deviceGroup OU. If present, the vendor ID is $($_.oui)"
                         
             Add-ADGroupMember `
                 -Server $DomainServer `
