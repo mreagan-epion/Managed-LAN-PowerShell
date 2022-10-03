@@ -7,7 +7,7 @@ function Get-DeviceType {
         [string] $macAddress
     )
 
-    $commonDesktopBrands = @("Dell", "DellInc", "Elitegro", "Micro-St", "CeLinkLimited", "AsustekC", "ASRockIncorporation", "PlugableTechnologies", "WinstarsTechnologyLtd", "IEEERegistrationAuthority", "ASUSTekCOMPUTERINC", "VMwareInc", "HewlettPackardEnterprise", "AppleInc", "SonicWall", "UbiquitiNetworksInc", "Plugable")
+    $commonDesktopBrands = @("Dell", "DellInc", "Elitegro", "Micro-St", "CeLinkLimited", "AsustekC", "ASRockIncorporation", "PlugableTechnologies", "WinstarsTechnologyLtd", "IEEERegistrationAuthority", "ASUSTekCOMPUTERINC", "VMwareInc", "HewlettPackardEnterprise", "AppleInc", "SonicWall", "UbiquitiNetworksInc", "Plugable", "WistronInfoCommKunshanCoLtd", "RealtekS")
     $commonPhoneBrands = @("Esi", "Zultys", "XiamenYe", "XiamenYealinkNetworkTechnologyCoLtd", "Sensapho", "NortelNetworks", "Polycom", "ZultysTechnologies", "MitelCorporation", "ZultysTe", "Mitel")
     $commonPrinterBrands = @("KYOCERADisplayCorporation", "HewlettP", "HewlettPackard", "LexmarkInternationalInc", "KonicaMi", "BrotherIndustriesLTD", "Ricoh", "ZebraTechnologiesCorpa", "CanonInc", "ZebraTec", "Xerox")
     $commonThinClientBrands = @("RaspberryPiFoundation", "RaspberryPiTradingLtd")
