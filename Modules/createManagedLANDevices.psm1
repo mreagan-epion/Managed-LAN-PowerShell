@@ -79,8 +79,6 @@ function Import-ManagedLANDevices {
             # }
             New-ADUser `
                 -Server $DomainServer `
-                -DisplayName "DisplayName" `
-                -GivenName "GivenName" `
                 -Name $($_.mac) `
                 -Path $OUPathList[$increment] `
                 -UserPrincipalName "$($_.mac)$DomainUPN" `
@@ -93,27 +91,30 @@ function Import-ManagedLANDevices {
             Add-ADGroupMember `
                 -Server $DomainServer `
                 -identity $groups[$deviceGroup[1]] `
-                -Members $name
+                -Members $($_.mac)
 
             Get-ADUser `
                 -Server $DomainServer `
-                -identity $name | Set-ADUser `
+                -identity $($_.mac) | Set-ADUser `
                 -Server $DomainServer `
                 -Replace @{primarygroupid=$groups[$deviceGroup[1]].primarygrouptoken}
 
             Remove-ADGroupMember `
                 -Server $DomainServer `
                 -identity "Domain Users" `
-                -Members "$name" `
+                -Members "$($_.mac)" `
                 -confirm:$false
 
             Set-ADAccountPassword `
                 -Server $DomainServer `
-                -Identity $name `
+                -Identity $($_.mac) `
                 -NewPassword (ConvertTo-SecureString `
                     -AsPlainText $($_.mac) `
                     -Force) `
                     -Reset `
+
+            [ADSI]$adsiEdit = "LDAP://CN=$($_.mac),$OUPathList[$increment]"
+            $adsiEdit.cn = "$name"
         }
     }
 }
