@@ -114,7 +114,7 @@ function Import-ManagedLANDevices {
                     -Reset `
 
             [ADSI]$adsiEdit = "LDAP://CN=$($_.mac),$OUPathList[$increment]"
-            $adsiEdit.cn = "$name"
+            $adsiEdit.put("cn", "$name")
         }
     }
 }
