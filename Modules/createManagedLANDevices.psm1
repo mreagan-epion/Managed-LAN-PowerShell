@@ -76,7 +76,7 @@ function Import-ManagedLANDevices {
             # $nameCheck = $name | Measure-Object -Character
             # if ($nameCheck.Characters -gt 20) {
             #     $name = $name.subString(0, [System.Math]::Min(20, $name.Length))
-            }
+            # }
             New-ADUser `
                 -Server $DomainServer `
                 -Name $($_.mac) `
