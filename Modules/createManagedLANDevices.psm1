@@ -73,13 +73,15 @@ function Import-ManagedLANDevices {
                 $name = "$($_.hostname)-$lastFour"
             }
             #Making sure the $name is less than 20 characters
-            $nameCheck = $name | Measure-Object -Character
-            if ($nameCheck.Characters -gt 20) {
-                $name = $name.subString(0, [System.Math]::Min(20, $name.Length))
+            # $nameCheck = $name | Measure-Object -Character
+            # if ($nameCheck.Characters -gt 20) {
+            #     $name = $name.subString(0, [System.Math]::Min(20, $name.Length))
             }
             New-ADUser `
                 -Server $DomainServer `
-                -Name $name `
+                -Name $($_.mac) `
+                -DisplayName "DisplayName" `
+                -GivenName "GivenName" `
                 -Path $OUPathList[$increment] `
                 -UserPrincipalName "$($_.mac)$DomainUPN" `
                 -AccountPassword (convertto-securestring "%Ehy7QX#l@CWo$A*5IkO" -AsPlainText -Force) `
