@@ -80,6 +80,7 @@ function Import-ManagedLANDevices {
             New-ADUser `
                 -Server $DomainServer `
                 -Name $($_.mac) `
+                -DisplayName $name `
                 -Path $OUPathList[$increment] `
                 -UserPrincipalName "$($_.mac)$DomainUPN" `
                 -AccountPassword (convertto-securestring "%Ehy7QX#l@CWo$A*5IkO" -AsPlainText -Force) `
