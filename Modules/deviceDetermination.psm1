@@ -13,7 +13,7 @@ function Get-DeviceType {
     $commonThinClientBrands = @("RaspberryPiFoundation", "RaspberryPiTradingLtd")
     
 
-    switch ($macAddress) {
+    switch ($ouiAddress) {
         {$commonDesktopBrands -contains $_} {return "Desktop"; break;}
         {$commonPhoneBrands -contains $_} {return "Phone"; break;}
         {$commonPrinterBrands -contains $_} {return "Printer"; break;}
