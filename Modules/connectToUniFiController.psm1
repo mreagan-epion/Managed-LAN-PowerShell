@@ -75,7 +75,7 @@ function Export-Devices {
         $proccessedCSV += [PSCustomObject]@{
             mac = $_.mac.toupper().trim() -replace(":", "")
             hostname = $_.hostname
-            oui = $_.oui.replace(" ", "").replace(",", "").replace(".", "")
+            oui = $_.oui.replace(" ", "").replace(",", "").replace(".", "").replace("(", "").replace(")", "")
         }
     }
     if (Test-Path $exportFilename) {

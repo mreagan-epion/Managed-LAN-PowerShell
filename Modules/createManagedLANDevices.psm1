@@ -9,17 +9,15 @@ function Import-ManagedLANDevices {
     )
 
     Import-Module ActiveDirectory
+    Import-Module .\Modules\createManagedLANDevices.psm1
+    Import-Module .\Modules\deviceDetermination.psm1
     $domainPrefixName = (Get-ADDomain).name
 
-    #Device CSV's
-    $DesktopUserAccounts = Import-CSV "C:\temp\Desktop.csv"
-    $PhoneUserAccounts = Import-CSV "C:\temp\Phone.csv"
-    $PrinterUserAccounts = Import-CSV "C:\temp\Printer.csv"
-    $ThinClientUserAccounts = Import-CSV "C:\temp\ThinClient.csv"
-    $MiscUserAccounts = Import-CSV "C:\temp\Misc.csv"
+    #Device CSV
+    $deviceList = Import-Csv -Path "C:\Temp\MACExport.csv"
 
     #Used in the Device Creation Loop
-    $allDeviceLists = @($DesktopUserAccounts, $PhoneUserAccounts, $PrinterUserAccounts, $ThinClientUserAccounts, $MiscUserAccounts)
+    # $allDeviceLists = @($DesktopUserAccounts, $PhoneUserAccounts, $PrinterUserAccounts, $ThinClientUserAccounts, $MiscUserAccounts)
 
     #OU Path for each device type
     $DesktopOUPath = "OU=Desktops,OU=Managed_LAN,OU=EpiOn,DC=$DomainPrefixName,DC=$DomainSuffixName"
@@ -30,12 +28,9 @@ function Import-ManagedLANDevices {
     $OUPathList = @($DesktopOUPath, $PhonesOUPath, $PrintersOUPath, $ThinClientsOUPath, $MiscOUPath)
 
     #Default Group Assignments for each device type
-    $DesktopGroup = Get-ADGroup "Managed_LAN_VLAN_1_Secure" -Properties @("PrimaryGroupToken")
-    $PhoneGroup = Get-ADGroup "Managed_LAN_VLAN_20_Internet_Only" -Properties @("PrimaryGroupToken")
-    $PrinterGroup = Get-ADGroup "Managed_LAN_VLAN_1_Secure" -Properties @("PrimaryGroupToken")
-    $ThinClientGroup = Get-ADGroup "Managed_LAN_VLAN_1_Secure" -Properties @("PrimaryGroupToken")
-    $MiscGroup = Get-ADGroup "Managed_LAN_VLAN_20_Internet_Only" -Properties @("PrimaryGroupToken")
-    $groups = @($DesktopGroup, $PhoneGroup, $PrinterGroup, $ThinClientGroup, $MiscGroup)
+    $vlan1 = Get-ADGroup "Managed_LAN_VLAN_1_Secure" -Properties @("PrimaryGroupToken")
+    $vlan20 = Get-ADGroup "Managed_LAN_VLAN_20_Internet_Only" -Properties @("PrimaryGroupToken")
+    $groups = @($vlan1, $vlan20)
 
     #Variables for the device creation loop
     $DomainName = (Get-WmiObject Win32_ComputerSystem).Domain
@@ -44,50 +39,81 @@ function Import-ManagedLANDevices {
     #will generate errors.
     $DomainServer = (Get-ADDomain).PDCEmulator
     
-    #Iterates through each list and creates the device accounts and sets all parameters/settings
+    #Temp name for loop below
+    New-Variable -Name "name"
+
+    #Increment serves two points of reference; OU Path and Groups
     $increment = 0
-    foreach ($list in $allDeviceLists) {
-        $list | ForEach-Object {
-            if (Get-ADUser -Filter "sAMAccountName -eq '$($_.line)'") {
-                "Desktop User Account '$($_.line)' Already Exists"}
-            else {
-            Write-Host "Creating Desktop User '$($_.line)'"
+    $groupIncrement = 0
+    $deviceList | ForEach-Object {
+        #Gets device type. Checks if $hostname exists or not. If not, it's set to Misc. 
+        $deviceGroup = Get-DeviceType -macAddress "$($_.oui)" -ErrorAction SilentlyContinue
+        switch ($deviceGroup[0]) {
+            {$_ -eq "Desktop"} {$increment = 0; break;}
+            {$_ -eq "Phone"} {$increment = 1; break;}
+            {$_ -eq "Printer"} {$increment = 2; break;}
+            {$_ -eq "ThinClient"} {$increment = 3; break;}
+            Default {$increment = 4; break;}
+        }
+        if (!$($_.oui)) {
+            $deviceGroup[1] = Read-Host "Vendor information is missing. The Device Name is $($_.hostname) and the Mac Address is $($_.mac). Enter 0 to put it in the Secure VLAN and 1 to put it into the Internet Only VLAN."
+        }
+        #Checks if account exists
+        if (Get-ADUser -Filter "sAMAccountName -eq '$($_.mac)'") {
+            "User Account '$($_.mac)' '$($_.hostname)' Already Exists"
+        }
+        else {
+            Write-Host "Creating User '$($_.mac)' '$($_.hostname)'"
+            #Determining the display name of the account for quick ID
+            if (!($($_.hostname))) {
+                $name = "$($_.mac)-$($_.oui)"
+            } else {
+                #Creating unique user IDs
+                $lastFour = $($_.mac).subString(12 -4)
+                $name = "$($_.hostname)-$lastFour"
+            }
+            #Making sure the $name is less than 20 characters
+            # $nameCheck = $name | Measure-Object -Character
+            # if ($nameCheck.Characters -gt 20) {
+            #     $name = $name.subString(0, [System.Math]::Min(20, $name.Length))
+            # }
             New-ADUser `
                 -Server $DomainServer `
-                -Name $($_.line) `
+                -Name $($_.mac) `
+                -DisplayName $name `
                 -Path $OUPathList[$increment] `
-                -UserPrincipalName "$($_.line)$DomainUPN" `
+                -UserPrincipalName "$($_.mac)$DomainUPN" `
                 -AccountPassword (convertto-securestring "%Ehy7QX#l@CWo$A*5IkO" -AsPlainText -Force) `
                 -Enabled $true `
                 -PasswordNeverExpires $true `
-                -AllowReversiblePasswordEncryption $true 
+                -AllowReversiblePasswordEncryption $true `
+                -Description "This device was automatically created by the EpiOn Managed LAN Script. It was originally placed in the $deviceGroup OU. If present, the vendor ID is $($_.oui)"
                         
             Add-ADGroupMember `
                 -Server $DomainServer `
-                -identity $groups[$increment] `
-                -Members $($_.line)
-    
+                -identity $groups[$deviceGroup[1]] `
+                -Members $($_.mac)
+
             Get-ADUser `
                 -Server $DomainServer `
-                -identity $($_.line) | Set-ADUser `
+                -identity $($_.mac) | Set-ADUser `
                 -Server $DomainServer `
-                -Replace @{primarygroupid=$groups[$increment].primarygrouptoken}
-    
+                -Replace @{primarygroupid=$groups[$deviceGroup[1]].primarygrouptoken}
+
             Remove-ADGroupMember `
                 -Server $DomainServer `
                 -identity "Domain Users" `
-                -Members "$($_.line)" `
+                -Members "$($_.mac)" `
                 -confirm:$false
-    
+
             Set-ADAccountPassword `
                 -Server $DomainServer `
-                -Identity $($_.line) `
+                -Identity $($_.mac) `
                 -NewPassword (ConvertTo-SecureString `
-                    -AsPlainText $($_.line) `
+                    -AsPlainText $($_.mac) `
                     -Force) `
                     -Reset `
-            }
         }
-        $increment++
     }
 }
+
