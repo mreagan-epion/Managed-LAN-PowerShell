@@ -60,7 +60,7 @@ function Import-ManagedLANDevices {
             }
         }
         #Gets device type. Checks if $hostname exists or not. If not, it's set to Misc. 
-        $deviceGroup = Get-DeviceType -macAddress "$($_.oui)" -ErrorAction SilentlyContinue
+        $deviceGroup = Get-DeviceType -ouiAddress "$($_.oui)" -ErrorAction SilentlyContinue
         switch ($deviceGroup) {
             {$_ -eq "Desktop"} {$increment = 0; $groupIncrement = 0; break;}
             {$_ -eq "Phone"} {$increment = 1; $groupIncrement = 1; break;}

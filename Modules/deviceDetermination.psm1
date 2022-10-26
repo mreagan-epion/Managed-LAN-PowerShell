@@ -3,8 +3,8 @@
 
 function Get-DeviceType {
     param (
-        [Parameter(Mandatory)]
-        [string] $macAddress
+        [Parameter()]
+        [string] $ouiAddress
     )
 
     $commonDesktopBrands = @("Dell", "DellInc", "Elitegro", "MicroSt", "CeLinkLimited", "AsustekC", "ASRockIncorporation", "PlugableTechnologies", "WinstarsTechnologyLtd", "IEEERegistrationAuthority", "ASUSTekCOMPUTERINC", "BroadcomLimited")
