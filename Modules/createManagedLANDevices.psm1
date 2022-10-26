@@ -46,6 +46,15 @@ function Import-ManagedLANDevices {
     $increment = 0
     $groupIncrement = 0
     $deviceList | ForEach-Object {
+        #Gets device type. Checks if $hostname exists or not. If not, it's set to Misc. 
+        $deviceGroup = Get-DeviceType -ouiAddress "$($_.oui)" -ErrorAction SilentlyContinue
+        switch ($deviceGroup) {
+            {$_ -eq "Desktop"} {$increment = 0; $groupIncrement = 0; break;}
+            {$_ -eq "Phone"} {$increment = 1; $groupIncrement = 1; break;}
+            {$_ -eq "Printer"} {$increment = 2; $groupIncrement = 0; break;}
+            {$_ -eq "ThinClient"} {$increment = 3; $groupIncrement = 0; break;}
+            Default {$increment = 4; $groupIncrement = 1; break;}
+        }
         #Missing vendor info. Unsure where to place the device:
         if (!$($_.oui)) {
             $deviceGroupQuery = Read-Host "Vendor information is missing. The Device Name is $($_.hostname) and the Mac Address is $($_.mac). Enter 0 to put it in the Secure VLAN and 1 to put it into the Internet Only VLAN."
@@ -58,15 +67,6 @@ function Import-ManagedLANDevices {
                 $increment = 4
                 $groupIncrement = 1
             }
-        }
-        #Gets device type. Checks if $hostname exists or not. If not, it's set to Misc. 
-        $deviceGroup = Get-DeviceType -ouiAddress "$($_.oui)" -ErrorAction SilentlyContinue
-        switch ($deviceGroup) {
-            {$_ -eq "Desktop"} {$increment = 0; $groupIncrement = 0; break;}
-            {$_ -eq "Phone"} {$increment = 1; $groupIncrement = 1; break;}
-            {$_ -eq "Printer"} {$increment = 2; $groupIncrement = 0; break;}
-            {$_ -eq "ThinClient"} {$increment = 3; $groupIncrement = 0; break;}
-            Default {$increment = 4; $groupIncrement = 1; break;}
         }
         #Checks if account exists
         if (Get-ADUser -Filter "sAMAccountName -eq '$($_.mac)'") {
