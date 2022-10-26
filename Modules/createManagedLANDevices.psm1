@@ -55,8 +55,16 @@ function Import-ManagedLANDevices {
             {$_ -eq "ThinClient"} {$increment = 3; break;}
             Default {$increment = 4; break;}
         }
+        #Missing vendor info. Unsure where to place the device:
         if (!$($_.oui)) {
-            $deviceGroup = Read-Host "Vendor information is missing. The Device Name is $($_.hostname) and the Mac Address is $($_.mac). Enter 0 to put it in the Secure VLAN and 1 to put it into the Internet Only VLAN."
+            $deviceGroupQuery = Read-Host "Vendor information is missing. The Device Name is $($_.hostname) and the Mac Address is $($_.mac). Enter 0 to put it in the Secure VLAN and 1 to put it into the Internet Only VLAN."
+            if ($deviceGroupQuery -eq 0) {
+                $deviceGroup = "Desktop"
+                $increment = 0
+            } elseif ($deviceGroupQuery -eq 1) {
+                $deviceGroup = "Misc"
+                $increment = 4
+            }
         }
         #Checks if account exists
         if (Get-ADUser -Filter "sAMAccountName -eq '$($_.mac)'") {
