@@ -3,23 +3,21 @@
 
 function Get-DeviceType {
     param (
-        [Parameter()]
+        [Parameter(Mandatory)]
         [string] $macAddress
     )
 
-    $commonDesktopBrands = @("Dell", "DellInc", "Elitegro", "Micro-St", "CeLinkLimited", "AsustekC", "ASRockIncorporation", "PlugableTechnologies", "WinstarsTechnologyLtd", "IEEERegistrationAuthority", "ASUSTekCOMPUTERINC", "VMwareInc", "HewlettPackardEnterprise", "AppleInc", "SonicWall", "UbiquitiNetworksInc", "Plugable", "WistronInfoCommKunshanCoLtd", "RealtekS")
-    $commonPhoneBrands = @("Esi", "Zultys", "XiamenYe", "XiamenYealinkNetworkTechnologyCoLtd", "Sensapho", "NortelNetworks", "Polycom", "ZultysTechnologies", "MitelCorporation", "ZultysTe", "Mitel")
-    $commonPrinterBrands = @("KYOCERADisplayCorporation", "HewlettP", "HewlettPackard", "LexmarkInternationalInc", "KonicaMi", "BrotherIndustriesLTD", "Ricoh", "ZebraTechnologiesCorpa", "CanonInc", "ZebraTec", "Xerox")
-    $commonThinClientBrands = @("RaspberryPiFoundation", "RaspberryPiTradingLtd")
+    $commonDesktopBrands = @("Dell", "Dell Inc.", "Elitegro", "Micro-St", "Ce Link Limited", "AsustekC", "ASRock Incorporation", "Plugable Technologies", "Winstars Technology Ltd", "IEEE Registration Authority", "ASUSTek COMPUTER INC.", "Broadcom Limited")
+    $commonPhoneBrands = @("Esi", "Zultys", "XiamenYe", "Xiamen Yealink Network Technology Co.,Ltd", "Sensapho", "Polycom")
+    $commonPrinterBrands = @("KYOCERA Display Corporation", "HewlettP", "Hewlett Packard", "Lexmark International, Inc.", "KonicaMi", "Brother Industries, LTD.", "Canon, Inc.")
+    $commonThinClientBrands = @("Raspberry Pi Foundation", "Raspberry Pi Trading Ltd")
     
-    $vlan1 = 0
-    $vlan20 = 1
 
     switch ($macAddress) {
-        {$commonDesktopBrands -contains $_} {return @("Desktop", $vlan1); break;}
-        {$commonPhoneBrands -contains $_} {return @("Phone", $vlan20); break;}
-        {$commonPrinterBrands -contains $_} {return @("Printer", $vlan1); break;}
-        {$commonThinClientBrands -contains $_} {return @("ThinClient", $vlan1); break;}
-        default {return @("Misc", $vlan20);}
+        {$commonDesktopBrands -contains $_} {return "Desktop"; break;}
+        {$commonPhoneBrands -contains $_} {return "Phone"; break;}
+        {$commonPrinterBrands -contains $_} {return "Printer"; break;}
+        {$commonThinClientBrands -contains $_} {return "ThinClient"; break;}
+        default {return "Misc";}
     }
 }
