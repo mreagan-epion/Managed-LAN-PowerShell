@@ -49,11 +49,11 @@ function Import-ManagedLANDevices {
         #Gets device type. Checks if $hostname exists or not. If not, it's set to Misc. 
         $deviceGroup = Get-DeviceType -macAddress "$($_.mac)" -ErrorAction SilentlyContinue
         switch ($deviceGroup) {
-            {$_ -eq "Desktop"} {$increment = 0; break;}
-            {$_ -eq "Phone"} {$increment = 1; break;}
-            {$_ -eq "Printer"} {$increment = 2; break;}
-            {$_ -eq "ThinClient"} {$increment = 3; break;}
-            Default {$increment = 4; break;}
+            {$_ -eq "Desktop"} {$increment = 0; $groupIncrement = 0; break;}
+            {$_ -eq "Phone"} {$increment = 1; $groupIncrement = 1; break;}
+            {$_ -eq "Printer"} {$increment = 2; $groupIncrement = 0; break;}
+            {$_ -eq "ThinClient"} {$increment = 3; $groupIncrement = 0; break;}
+            Default {$increment = 4; $groupIncrement = 1; break;}
         }
         #Missing vendor info. Unsure where to place the device:
         if (!$($_.oui)) {
@@ -61,9 +61,11 @@ function Import-ManagedLANDevices {
             if ($deviceGroupQuery -eq 0) {
                 $deviceGroup = "Desktop"
                 $increment = 0
+                $groupIncrement = 0
             } elseif ($deviceGroupQuery -eq 1) {
                 $deviceGroup = "Misc"
                 $increment = 4
+                $groupIncrement = 1
             }
         }
         #Checks if account exists
@@ -99,14 +101,14 @@ function Import-ManagedLANDevices {
                         
             Add-ADGroupMember `
                 -Server $DomainServer `
-                -identity $groups[$deviceGroup] `
+                -identity $groups[$groupIncrement] `
                 -Members $($_.mac)
 
             Get-ADUser `
                 -Server $DomainServer `
                 -identity $($_.mac) | Set-ADUser `
                 -Server $DomainServer `
-                -Replace @{primarygroupid=$groups[$deviceGroup].primarygrouptoken}
+                -Replace @{primarygroupid=$groups[$groupIncrement].primarygrouptoken}
 
             Remove-ADGroupMember `
                 -Server $DomainServer `
