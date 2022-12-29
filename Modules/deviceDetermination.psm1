@@ -3,17 +3,17 @@
 
 function Get-DeviceType {
     param (
-        [Parameter(Mandatory)]
-        [string] $macAddress
+        [Parameter()]
+        [string] $ouiAddress
     )
 
-    $commonDesktopBrands = @("Dell", "Dell Inc.", "Elitegro", "Micro-St", "Ce Link Limited", "AsustekC", "ASRock Incorporation", "Plugable Technologies", "Winstars Technology Ltd", "IEEE Registration Authority", "ASUSTek COMPUTER INC.", "Broadcom Limited")
-    $commonPhoneBrands = @("Esi", "Zultys", "XiamenYe", "Xiamen Yealink Network Technology Co.,Ltd", "Sensapho", "Polycom")
-    $commonPrinterBrands = @("KYOCERA Display Corporation", "HewlettP", "Hewlett Packard", "Lexmark International, Inc.", "KonicaMi", "Brother Industries, LTD.", "Canon, Inc.")
-    $commonThinClientBrands = @("Raspberry Pi Foundation", "Raspberry Pi Trading Ltd")
+    $commonDesktopBrands = @("Dell", "DellInc", "Elitegro", "MicroSt", "CeLinkLimited", "AsustekC", "ASRockIncorporation", "PlugableTechnologies", "WinstarsTechnologyLtd", "IEEERegistrationAuthority", "ASUSTekCOMPUTERINC", "BroadcomLimited")
+    $commonPhoneBrands = @("Esi", "Zultys", "XiamenYe", "XiamenYealinkNetworkTechnologyCoLtd", "Sensapho", "Polycom")
+    $commonPrinterBrands = @("KYOCERADisplayCorporation", "HewlettP", "HewlettPackard", "LexmarkInternationalInc", "KonicaMi", "BrotherIndustriesLTD", "CanonInc")
+    $commonThinClientBrands = @("RaspberryPiFoundation", "RaspberryPiTradingLtd")
     
 
-    switch ($macAddress) {
+    switch ($ouiAddress) {
         {$commonDesktopBrands -contains $_} {return "Desktop"; break;}
         {$commonPhoneBrands -contains $_} {return "Phone"; break;}
         {$commonPrinterBrands -contains $_} {return "Printer"; break;}

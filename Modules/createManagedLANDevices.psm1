@@ -47,16 +47,26 @@ function Import-ManagedLANDevices {
     $groupIncrement = 0
     $deviceList | ForEach-Object {
         #Gets device type. Checks if $hostname exists or not. If not, it's set to Misc. 
-        $deviceGroup = Get-DeviceType -macAddress "$($_.oui)" -ErrorAction SilentlyContinue
-        switch ($deviceGroup[0]) {
-            {$_ -eq "Desktop"} {$increment = 0; break;}
-            {$_ -eq "Phone"} {$increment = 1; break;}
-            {$_ -eq "Printer"} {$increment = 2; break;}
-            {$_ -eq "ThinClient"} {$increment = 3; break;}
-            Default {$increment = 4; break;}
+        $deviceGroup = Get-DeviceType -ouiAddress "$($_.oui)" -ErrorAction SilentlyContinue
+        switch ($deviceGroup) {
+            {$_ -eq "Desktop"} {$increment = 0; $groupIncrement = 0; break;}
+            {$_ -eq "Phone"} {$increment = 1; $groupIncrement = 1; break;}
+            {$_ -eq "Printer"} {$increment = 2; $groupIncrement = 0; break;}
+            {$_ -eq "ThinClient"} {$increment = 3; $groupIncrement = 0; break;}
+            Default {$increment = 4; $groupIncrement = 1; break;}
         }
+        #Missing vendor info. Unsure where to place the device:
         if (!$($_.oui)) {
-            $deviceGroup[1] = Read-Host "Vendor information is missing. The Device Name is $($_.hostname) and the Mac Address is $($_.mac). Enter 0 to put it in the Secure VLAN and 1 to put it into the Internet Only VLAN."
+            $deviceGroupQuery = Read-Host "Vendor information is missing. The Device Name is $($_.hostname) and the Mac Address is $($_.mac). Enter 0 to put it in the Secure VLAN and 1 to put it into the Internet Only VLAN."
+            if ($deviceGroupQuery -eq 0) {
+                $deviceGroup = "Desktop"
+                $increment = 0
+                $groupIncrement = 0
+            } elseif ($deviceGroupQuery -eq 1) {
+                $deviceGroup = "Misc"
+                $increment = 4
+                $groupIncrement = 1
+            }
         }
         #Checks if account exists
         if (Get-ADUser -Filter "sAMAccountName -eq '$($_.mac)'") {
@@ -91,14 +101,14 @@ function Import-ManagedLANDevices {
                         
             Add-ADGroupMember `
                 -Server $DomainServer `
-                -identity $groups[$deviceGroup[1]] `
+                -identity $groups[$groupIncrement] `
                 -Members $($_.mac)
 
             Get-ADUser `
                 -Server $DomainServer `
                 -identity $($_.mac) | Set-ADUser `
                 -Server $DomainServer `
-                -Replace @{primarygroupid=$groups[$deviceGroup[1]].primarygrouptoken}
+                -Replace @{primarygroupid=$groups[$groupIncrement].primarygrouptoken}
 
             Remove-ADGroupMember `
                 -Server $DomainServer `
