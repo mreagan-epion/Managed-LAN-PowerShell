@@ -10,7 +10,7 @@ function ConnectTo-UniFiController {
     
     #Security Defaults
     [System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}
-    $AllProtocols = [System.Net.SecurityProtocolType]'Ssl3,Tls,Tls11,Tls12'
+    $AllProtocols = [System.Net.SecurityProtocolType]'Tls,Tls11,Tls12'
     [System.Net.ServicePointManager]::SecurityProtocol = $AllProtocols
 
     #Unifi Controller IP/port with base API folder.
@@ -52,6 +52,7 @@ function Export-Devices {
         -Body $($connectionParametersReturn[0]) `
         -ContentType "application/json" `
         -SessionVariable session `
+        -SkipCertificateCheck `
         | out-null
 
     $exportFilename = "C:\Temp\MACExport.csv"
@@ -60,10 +61,10 @@ function Export-Devices {
     }
 
     #Pulling list of sites on Unifi Controller and filtering by Client.
-    $response = Invoke-RestMethod -Uri "$($connectionParametersReturn[2])/self/sites" -Method Get  -WebSession $session
+    $response = Invoke-RestMethod -Uri "$($connectionParametersReturn[2])/self/sites" -Method Get  -WebSession $session -SkipCertificateCheck
     $returnedSites = $response.data | select name,desc | where desc -like "*$($connectionParametersReturn[3])*" | sort-object desc
 
-    $finalresult = $returnedSites | select name,desc,@{n="devices";e={Invoke-RestMethod -Uri "$($connectionParametersReturn[2])/s/$($_.name)/stat/sta" -Method Post -Body "" -WebSession $session}}
+    $finalresult = $returnedSites | select name,desc,@{n="devices";e={Invoke-RestMethod -Uri "$($connectionParametersReturn[2])/s/$($_.name)/stat/sta" -Method Post -Body "" -WebSession $session -SkipCertificateCheck}}
     ($finalresult.devices.data | where {$_.is_wired} | select mac, hostname, oui) | Export-Csv -Path $exportFilename -Encoding ASCII -NoTypeInformation
 
     #Importing Un-Cleaned Data File
