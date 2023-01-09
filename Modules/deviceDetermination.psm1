@@ -7,9 +7,9 @@ function Get-DeviceType {
         [string] $ouiAddress
     )
 
-    $commonDesktopBrands = @("Dell", "DellInc", "Elitegro", "MicroSt", "CeLinkLimited", "AsustekC", "ASRockIncorporation", "PlugableTechnologies", "WinstarsTechnologyLtd", "IEEERegistrationAuthority", "ASUSTekCOMPUTERINC", "BroadcomLimited")
+    $commonDesktopBrands = @("Dell", "DellInc", "Elitegro", "MicroSt", "CeLinkLimited", "AsustekC", "ASRockIncorporation", "PlugableTechnologies", "WinstarsTechnologyLtd", "IEEERegistrationAuthority", "ASUSTekCOMPUTERINC", "BroadcomLimited", "HewlettPackardEnterprise")
     $commonPhoneBrands = @("Esi", "Zultys", "XiamenYe", "XiamenYealinkNetworkTechnologyCoLtd", "Sensapho", "Polycom")
-    $commonPrinterBrands = @("KYOCERADisplayCorporation", "HewlettP", "HewlettPackard", "LexmarkInternationalInc", "KonicaMi", "BrotherIndustriesLTD", "CanonInc")
+    $commonPrinterBrands = @("KYOCERADisplayCorporation", "HewlettP", "HewlettPackard", "LexmarkInternationalInc", "KonicaMi", "BrotherIndustriesLTD", "CanonInc", "ZebraTechnologiesCorp", "Ricoh", "APCbySchneiderElectric")
     $commonThinClientBrands = @("RaspberryPiFoundation", "RaspberryPiTradingLtd")
     
 
