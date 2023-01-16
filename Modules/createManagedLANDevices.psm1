@@ -143,7 +143,6 @@ function Create-ManagedLANDevice { #Single User Creation
         $deviceMac = Read-Host "Please enter the MAC Address: "
         $deviceHostname = Read-Host "Please enter the Hostname (Can be blank): "
         $deviceOUI = Read-Host "Please enter the Vendor Type (Can be blank): "
-        $deviceList = @($deviceMac, $deviceHostname, $deviceOUI)
 
         #OU Path for each device type
         $DesktopOUPath = "OU=Desktops,OU=Managed_LAN,OU=EpiOn,DC=$DomainPrefixName,DC=$DomainSuffixName"
@@ -205,7 +204,7 @@ function Create-ManagedLANDevice { #Single User Creation
             } else {
                 #Creating unique user IDs
                 $lastFour = $deviceMac.subString(12 -4)
-                $name = $deviceHostname-$lastFour
+                $name = "$deviceHostname-$lastFour"
             }
             #Making sure the $name is less than 20 characters
             # $nameCheck = $name | Measure-Object -Character
