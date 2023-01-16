@@ -171,85 +171,83 @@ function Create-ManagedLANDevice { #Single User Creation
         #Increment serves two points of reference; OU Path and Groups
         $increment = 0
         $groupIncrement = 0
-        $deviceList | ForEach-Object {
-            #Gets device type. Checks if $hostname exists or not. If not, it's set to Misc. 
-            $deviceGroup = Get-DeviceType -ouiAddress $deviceList[2] -ErrorAction SilentlyContinue
-            switch ($deviceGroup) {
-                {$_ -eq "Desktop"} {$increment = 0; $groupIncrement = 0; break;}
-                {$_ -eq "Phone"} {$increment = 1; $groupIncrement = 1; break;}
-                {$_ -eq "Printer"} {$increment = 2; $groupIncrement = 0; break;}
-                {$_ -eq "ThinClient"} {$increment = 3; $groupIncrement = 0; break;}
-                Default {$increment = 4; $groupIncrement = 1; break;}
+        #Gets device type. Checks if $hostname exists or not. If not, it's set to Misc. 
+        $deviceGroup = Get-DeviceType -ouiAddress $deviceOUI -ErrorAction SilentlyContinue
+        switch ($deviceGroup) {
+            {$_ -eq "Desktop"} {$increment = 0; $groupIncrement = 0; break;}
+            {$_ -eq "Phone"} {$increment = 1; $groupIncrement = 1; break;}
+            {$_ -eq "Printer"} {$increment = 2; $groupIncrement = 0; break;}
+            {$_ -eq "ThinClient"} {$increment = 3; $groupIncrement = 0; break;}
+            Default {$increment = 4; $groupIncrement = 1; break;}
+        }
+        #Missing vendor info. Unsure where to place the device:
+        if (!$deviceOUI) {
+            $deviceGroupQuery = Read-Host "Vendor information is missing. The Device Name is $deviceOUI and the Mac Address is $deviceMac. Enter 0 to put it in the Secure VLAN and 1 to put it into the Internet Only VLAN."
+            if ($deviceGroupQuery -eq 0) {
+                $deviceGroup = "Desktop"
+                $increment = 0
+                $groupIncrement = 0
+            } elseif ($deviceGroupQuery -eq 1) {
+                $deviceGroup = "Misc"
+                $increment = 4
+                $groupIncrement = 1
             }
-            #Missing vendor info. Unsure where to place the device:
-            if (!$deviceList[2]) {
-                $deviceGroupQuery = Read-Host Vendor information is missing. The Device Name is $deviceList[2] and the Mac Address is $deviceList[0]. Enter 0 to put it in the Secure VLAN and 1 to put it into the Internet Only VLAN.
-                if ($deviceGroupQuery -eq 0) {
-                    $deviceGroup = "Desktop"
-                    $increment = 0
-                    $groupIncrement = 0
-                } elseif ($deviceGroupQuery -eq 1) {
-                    $deviceGroup = "Misc"
-                    $increment = 4
-                    $groupIncrement = 1
-                }
+        }
+        #Checks if account exists
+        if (Get-ADUser -Filter "sAMAccountName -eq '$deviceMac'") {
+            Write-Host "User Account $deviceMac $deviceHostname Already Exists"
+        }
+        else {
+            Write-Host "Creating User $deviceMac $deviceHostname"
+            #Determining the display name of the account for quick ID
+            if (!$deviceHostname) {
+                $name = "$deviceMac-$deviceOUI"
+            } else {
+                #Creating unique user IDs
+                $lastFour = $deviceMac.subString(12 -4)
+                $name = $deviceHostname-$lastFour
             }
-            #Checks if account exists
-            if (Get-ADUser -Filter "sAMAccountName -eq '$deviceMac'") {
-                Write-Host User Account $deviceList[0] $deviceList[1] Already Exists
-            }
-            else {
-                Write-Host Creating User $deviceList[0] $deviceList[1]
-                #Determining the display name of the account for quick ID
-                if (!$deviceList[1]) {
-                    $name = $deviceList[0]-$deviceList[2]
-                } else {
-                    #Creating unique user IDs
-                    $lastFour = $deviceList[0].subString(12 -4)
-                    $name = $deviceList[1]-$lastFour
-                }
-                #Making sure the $name is less than 20 characters
-                # $nameCheck = $name | Measure-Object -Character
-                # if ($nameCheck.Characters -gt 20) {
-                #     $name = $name.subString(0, [System.Math]::Min(20, $name.Length))
-                # }
-                New-ADUser `
-                    -Server $DomainServer `
-                    -Name $deviceList[0] `
-                    -DisplayName $name `
-                    -Path $OUPathList[$increment] `
-                    -UserPrincipalName $deviceList[0]$DomainUPN `
-                    -AccountPassword (convertto-securestring "%Ehy7QX#l@CWo$A*5IkO" -AsPlainText -Force) `
-                    -Enabled $true `
-                    -PasswordNeverExpires $true `
-                    -AllowReversiblePasswordEncryption $true `
-                    -Description This device was automatically created by the EpiOn Managed LAN Script. It was originally placed in the $deviceGroup OU. If present, the vendor ID is $deviceList[2]
-                            
-                Add-ADGroupMember `
-                    -Server $DomainServer `
-                    -identity $groups[$groupIncrement] `
-                    -Members $deviceList[0]
+            #Making sure the $name is less than 20 characters
+            # $nameCheck = $name | Measure-Object -Character
+            # if ($nameCheck.Characters -gt 20) {
+            #     $name = $name.subString(0, [System.Math]::Min(20, $name.Length))
+            # }
+            New-ADUser `
+                -Server $DomainServer `
+                -Name $deviceMac `
+                -DisplayName $name `
+                -Path $OUPathList[$increment] `
+                -UserPrincipalName "$deviceMac$DomainUPN" `
+                -AccountPassword (convertto-securestring "%Ehy7QX#l@CWo$A*5IkO" -AsPlainText -Force) `
+                -Enabled $true `
+                -PasswordNeverExpires $true `
+                -AllowReversiblePasswordEncryption $true `
+                -Description "This device was automatically created by the EpiOn Managed LAN Script. It was originally placed in the $deviceGroup OU. If present, the vendor ID is $deviceOUI"
+                        
+            Add-ADGroupMember `
+                -Server $DomainServer `
+                -identity $groups[$groupIncrement] `
+                -Members $deviceMac
 
-                Get-ADUser `
-                    -Server $DomainServer `
-                    -identity $deviceList[0] | Set-ADUser `
-                    -Server $DomainServer `
-                    -Replace @{primarygroupid=$groups[$groupIncrement].primarygrouptoken}
+            Get-ADUser `
+                -Server $DomainServer `
+                -identity $deviceMac | Set-ADUser `
+                -Server $DomainServer `
+                -Replace @{primarygroupid=$groups[$groupIncrement].primarygrouptoken}
 
-                Remove-ADGroupMember `
-                    -Server $DomainServer `
-                    -identity "Domain Users" `
-                    -Members $deviceList[0] `
-                    -confirm:$false
+            Remove-ADGroupMember `
+                -Server $DomainServer `
+                -identity "Domain Users" `
+                -Members $deviceMac `
+                -confirm:$false
 
-                Set-ADAccountPassword `
-                    -Server $DomainServer `
-                    -Identity $deviceList[0] `
-                    -NewPassword (ConvertTo-SecureString `
-                        -AsPlainText $deviceList[0] `
-                        -Force) `
-                        -Reset `
-            }
+            Set-ADAccountPassword `
+                -Server $DomainServer `
+                -Identity $deviceMac `
+                -NewPassword (ConvertTo-SecureString `
+                    -AsPlainText $deviceMac `
+                    -Force) `
+                    -Reset `
         }
         $answer = Read-Host "Add another device? y/n"
     } while (($answer -eq "Y") -or ($answer -eq "y"))
