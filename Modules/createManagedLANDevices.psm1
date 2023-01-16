@@ -142,6 +142,7 @@ function Create-ManagedLANDevice { #Single User Creation
     $answer = "Y"
     do {
         #Device Input
+        Clear-Host
         Write-Host "You will be prompted to enter the MAC Address, please make sure to remove colons and Upper Case all letters." -ForegroundColor Yellow
         $deviceMac = Read-Host "Please enter the MAC Address: "
         $deviceHostname = Read-Host "Please enter the Hostname (Can be blank): "
