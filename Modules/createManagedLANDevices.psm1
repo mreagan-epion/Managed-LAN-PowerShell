@@ -173,7 +173,7 @@ function Create-ManagedLANDevice { #Single User Creation
         $groupIncrement = 0
         $deviceList | ForEach-Object {
             #Gets device type. Checks if $hostname exists or not. If not, it's set to Misc. 
-            $deviceGroup = Get-DeviceType -ouiAddress "$deviceList[2]" -ErrorAction SilentlyContinue
+            $deviceGroup = Get-DeviceType -ouiAddress $deviceList[2] -ErrorAction SilentlyContinue
             switch ($deviceGroup) {
                 {$_ -eq "Desktop"} {$increment = 0; $groupIncrement = 0; break;}
                 {$_ -eq "Phone"} {$increment = 1; $groupIncrement = 1; break;}
@@ -183,7 +183,7 @@ function Create-ManagedLANDevice { #Single User Creation
             }
             #Missing vendor info. Unsure where to place the device:
             if (!$deviceList[2]) {
-                $deviceGroupQuery = Read-Host "Vendor information is missing. The Device Name is $deviceList[2] and the Mac Address is $deviceList[0]. Enter 0 to put it in the Secure VLAN and 1 to put it into the Internet Only VLAN."
+                $deviceGroupQuery = Read-Host Vendor information is missing. The Device Name is $deviceList[2] and the Mac Address is $deviceList[0]. Enter 0 to put it in the Secure VLAN and 1 to put it into the Internet Only VLAN.
                 if ($deviceGroupQuery -eq 0) {
                     $deviceGroup = "Desktop"
                     $increment = 0
@@ -195,18 +195,18 @@ function Create-ManagedLANDevice { #Single User Creation
                 }
             }
             #Checks if account exists
-            if (Get-ADUser -Filter "sAMAccountName -eq '$deviceList[0]'") {
-                "User Account '$deviceList[0]' '$deviceList[1]' Already Exists"
+            if (Get-ADUser -Filter sAMAccountName -eq $deviceList[0]) {
+                Write-Host User Account $deviceList[0] $deviceList[1] Already Exists
             }
             else {
-                Write-Host "Creating User '$deviceList[0]' '$deviceList[1]'"
+                Write-Host Creating User $deviceList[0] $deviceList[1]
                 #Determining the display name of the account for quick ID
                 if (!$deviceList[1]) {
-                    $name = "$deviceList[0]-$deviceList[2]"
+                    $name = $deviceList[0]-$deviceList[2]
                 } else {
                     #Creating unique user IDs
                     $lastFour = $deviceList[0].subString(12 -4)
-                    $name = "$deviceList[1]-$lastFour"
+                    $name = $deviceList[1]-$lastFour
                 }
                 #Making sure the $name is less than 20 characters
                 # $nameCheck = $name | Measure-Object -Character
@@ -218,12 +218,12 @@ function Create-ManagedLANDevice { #Single User Creation
                     -Name $deviceList[0] `
                     -DisplayName $name `
                     -Path $OUPathList[$increment] `
-                    -UserPrincipalName "$deviceList[0]$DomainUPN" `
+                    -UserPrincipalName $deviceList[0]$DomainUPN `
                     -AccountPassword (convertto-securestring "%Ehy7QX#l@CWo$A*5IkO" -AsPlainText -Force) `
                     -Enabled $true `
                     -PasswordNeverExpires $true `
                     -AllowReversiblePasswordEncryption $true `
-                    -Description "This device was automatically created by the EpiOn Managed LAN Script. It was originally placed in the $deviceGroup OU. If present, the vendor ID is $deviceList[2]"
+                    -Description This device was automatically created by the EpiOn Managed LAN Script. It was originally placed in the $deviceGroup OU. If present, the vendor ID is $deviceList[2]
                             
                 Add-ADGroupMember `
                     -Server $DomainServer `
@@ -239,7 +239,7 @@ function Create-ManagedLANDevice { #Single User Creation
                 Remove-ADGroupMember `
                     -Server $DomainServer `
                     -identity "Domain Users" `
-                    -Members "$deviceList[0]" `
+                    -Members $deviceList[0] `
                     -confirm:$false
 
                 Set-ADAccountPassword `
