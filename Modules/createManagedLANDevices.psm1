@@ -195,7 +195,7 @@ function Create-ManagedLANDevice { #Single User Creation
                 }
             }
             #Checks if account exists
-            if (Get-ADUser -Filter sAMAccountName -eq $deviceList[0]) {
+            if (Get-ADUser -Filter "sAMAccountName -eq '$deviceMac'") {
                 Write-Host User Account $deviceList[0] $deviceList[1] Already Exists
             }
             else {
