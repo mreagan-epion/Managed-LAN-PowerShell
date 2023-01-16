@@ -142,9 +142,10 @@ function Create-ManagedLANDevice { #Single User Creation
     $answer = "Y"
     do {
         #Device Input
+        Write-Host "You will be prompted to enter the MAC Address, please make sure to remove colons and Upper Case all letters." -ForegroundColor Yellow
         $deviceMac = Read-Host "Please enter the MAC Address: "
         $deviceHostname = Read-Host "Please enter the Hostname (Can be blank): "
-        $deviceOUI = Read-Host "Please enter the Vendor Type (Can be blank): "
+        # $deviceOUI = Read-Host "Please enter the Vendor Type (Can be blank): "
 
         #OU Path for each device type
         $DesktopOUPath = "OU=Desktops,OU=Managed_LAN,OU=EpiOn,DC=$DomainPrefixName,DC=$DomainSuffixName"
