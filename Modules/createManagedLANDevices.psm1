@@ -137,6 +137,8 @@ function Create-ManagedLANDevice { #Single User Creation
     Import-Module .\Modules\createManagedLANDevices.psm1
     Import-Module .\Modules\deviceDetermination.psm1
     $domainPrefixName = (Get-ADDomain).name
+    #Temp name for loop below
+    New-Variable -Name "name"
     $answer = "Y"
     do {
         #Device Input
@@ -163,9 +165,6 @@ function Create-ManagedLANDevice { #Single User Creation
         #Used to specifiy a specific server for creating accounts. Without this, the script might hit more than one DC and that
         #will generate errors.
         $DomainServer = (Get-ADDomain).PDCEmulator
-        
-        #Temp name for loop below
-        New-Variable -Name "name"
 
         #Increment serves two points of reference; OU Path and Groups
         $increment = 0
