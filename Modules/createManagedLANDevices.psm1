@@ -181,7 +181,7 @@ function Create-ManagedLANDevice { #Single User Creation
         }
         #Missing vendor info. Unsure where to place the device:
         if (!$deviceOUI) {
-            $deviceGroupQuery = Read-Host "Vendor information is missing. The Device Name is $deviceOUI and the Mac Address is $deviceMac. Enter 0 to put it in the Secure VLAN and 1 to put it into the Internet Only VLAN."
+            $deviceGroupQuery = Read-Host "Enter 0 to put it in the Secure VLAN and 1 to put it into the Internet Only VLAN."
             if ($deviceGroupQuery -eq 0) {
                 $deviceGroup = "Desktop"
                 $increment = 0
